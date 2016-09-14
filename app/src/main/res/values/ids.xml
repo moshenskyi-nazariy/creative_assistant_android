@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <item name = "Room1" type="id"/>
+    <item name = "Room2" type="id"/>
+    <item name=  "Room3" type="id"/>
+    <item name="Door" type="id"/>
+    <item name="Light" type="id"/>
+    <item name="AllInformation" type="id"/>
+
+
+
+
+
+</resources>
