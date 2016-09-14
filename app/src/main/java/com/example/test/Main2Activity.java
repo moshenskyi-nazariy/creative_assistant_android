@@ -29,7 +29,11 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
 
     LinearLayout.LayoutParams layoutParams;
 
-
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }//мы запрещаем выходить кнопкой "назад" на главную активность
+    //вместо этого наше приложение уходит в "фон"
 
 
     @Override
@@ -44,8 +48,8 @@ public class Main2Activity extends AppCompatActivity implements View.OnClickList
 
         linearLayout = (LinearLayout) findViewById(R.id.lMain);
 
-        layoutParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+        layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
 
         layoutParams.topMargin = 50;
 

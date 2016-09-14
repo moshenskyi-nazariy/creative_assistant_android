@@ -9,19 +9,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.test.MainActivity">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/login"
-        android:layout_marginTop="145dp"
-        android:text="Login"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="join"
+        android:text="Sign in"
         android:id="@+id/joinButton"
         android:layout_marginBottom="54dp"
         android:layout_alignParentBottom="true"
@@ -32,22 +23,51 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/password"
-        android:layout_centerVertical="true"
-        android:layout_alignRight="@+id/login"
-        android:layout_alignEnd="@+id/login"
-        android:text="Password" />
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/login"
+        android:layout_above="@+id/textView"
+        android:layout_centerHorizontal="true" />
 
-    <Switch
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:id="@+id/switch1"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/password"
         android:layout_above="@+id/joinButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="34dp"
-        android:checked="false"
-        android:onClick="onClick" />
+        android:layout_alignLeft="@+id/login"
+        android:layout_alignStart="@+id/login"
+        android:layout_marginBottom="145dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:layout_above="@+id/login"
+        android:layout_alignLeft="@+id/login"
+        android:layout_alignStart="@+id/login"
+        android:id="@+id/textView2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Password"
+        android:id="@+id/textView"
+        android:layout_above="@+id/password"
+        android:layout_alignLeft="@+id/login"
+        android:layout_alignStart="@+id/login" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remember me"
+        android:id="@+id/checkBox"
+        android:layout_marginTop="38dp"
+        android:layout_alignTop="@+id/password"
+        android:layout_alignRight="@+id/password"
+        android:layout_alignEnd="@+id/password"
+        android:checked="false" />
 
 
 </RelativeLayout>

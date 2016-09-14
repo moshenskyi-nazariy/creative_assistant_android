@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import android.widget.Switch;
@@ -36,8 +37,9 @@ public class MainActivity extends AppCompatActivity {
     EditText login;
     EditText pass;
 
-    Switch sw;
+    //Switch sw;
 
+    CheckBox RememberCheckBox;
 
     Intent intent;
 
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         intent = new Intent(MainActivity.this,Main2Activity.class);
 
-        Quit = getIntent().getIntExtra("Quit",0);
+        Quit = getIntent().getIntExtra("Quit", 0);
 
 
 
@@ -64,12 +66,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        sh = getSharedPreferences(APP_SETTINGS,MODE_PRIVATE);
+        sh = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
 
         login = (EditText)findViewById(R.id.login);
         pass = (EditText)findViewById(R.id.password);
-
-        sw = (Switch)findViewById(R.id.switch1);
+        RememberCheckBox =(CheckBox)findViewById(R.id.checkBox);
+        //sw = (Switch)findViewById(R.id.switch1);
     }
 
 
@@ -78,17 +80,12 @@ public class MainActivity extends AppCompatActivity {
     public void onClick(View view) {
 
         switch(view.getId()) {
-
-
-
-
-
             case R.id.joinButton:
 
 
                 if(login.getText().toString().equals(LoginForChecking) && pass.getText().toString().equals(PasswordForChecking)) {
 
-                    if(sw.isChecked()){
+                    if(RememberCheckBox.isChecked()){
 
                         tempLogin = login.getText().toString();
                         tempPass = pass.getText().toString();
@@ -137,16 +134,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
     protected void onResume(){
-
-
         super.onResume();
 
         if(Quit == 1){
-
             SharedPreferences.Editor ed = sh.edit();
-
             ed.putString(sh_login,"");
             ed.putString(sh_pas,"");
             ed.apply();
@@ -160,22 +152,7 @@ public class MainActivity extends AppCompatActivity {
             if(s1.equals("admin") && s2.equals("admin"))
                 startActivity(intent);
 
-
         }
-
-
-
-
-
-
-
-
-
     }
-
-
-
-
-
 
 }
