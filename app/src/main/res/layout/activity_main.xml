@@ -38,7 +38,7 @@
         android:layout_above="@+id/joinButton"
         android:layout_alignLeft="@+id/login"
         android:layout_alignStart="@+id/login"
-        android:layout_marginBottom="145dp" />
+        android:layout_marginBottom="154dp" />
 
     <TextView
         android:layout_width="wrap_content"
