@@ -7,6 +7,8 @@
     <item name="Door" type="id"/>
     <item name="Light" type="id"/>
     <item name="AllInformation" type="id"/>
+    <item name="Curtain" type="id"/>
+    <item name= "Ventilation" type="id"/>
 
 
 

@@ -158,11 +158,45 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
                     //показываем сообщение
                     toast.show();
-                }
-                else {
+                } else {
                     //показываем сообщение на экране
                     Toast.makeText(this, "Light has turned off", Toast.LENGTH_SHORT).show();
                 }
+
+            case R.id.Curtain:
+
+                Switch Curtain = (Switch) findViewById(R.id.Curtain);
+
+                if(Curtain.isChecked()) {
+
+                    Toast toast = Toast.makeText(this, "Curtain has opened", Toast.LENGTH_SHORT);
+
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+
+                    toast.show();
+                } else {
+
+                    Toast.makeText(this, "Curtain has closed", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.Ventilation:
+
+                Switch Ventilation = (Switch) findViewById(R.id.Ventilation);
+
+                if(Ventilation.isChecked()) {
+
+                    Toast toast = Toast.makeText(this, "Ventilation has opened", Toast.LENGTH_SHORT);
+
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+
+                    toast.show();
+                } else {
+
+                    Toast.makeText(this, "Ventilation has closed", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
 
             default:
                 break;
@@ -185,6 +219,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             case 1:
                 //выводит на экран кнопку двери
                 GenerateDoorButton(linearLayout, layoutParams);
+                GenerateCurtainButton(linearLayout, layoutParams);
+
 
                 //выводит на экран кнопку показа всей информаци
                 GenerateAllInformationButton(linearLayout, layoutParams);
@@ -259,6 +295,38 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         linearLayout.addView(Light, layoutParams);
     }
 
+    //создание "кнопки" шторы
+    private void GenerateCurtainButton(LinearLayout linearLayout,
+                                     LinearLayout.LayoutParams layoutParams) {
+
+        Switch Curtain = new Switch(this);
+
+        Curtain.setText("Curtain");
+
+        Curtain.setId(R.id.Curtain);
+
+        linearLayout.addView(Curtain, layoutParams);
+    }
+
+    //создания "кнопки" вентиляции
+    private void GenerateVentilationButton(LinearLayout linearLayout,
+                                           LinearLayout.LayoutParams layoutParams) {
+
+        Switch Ventilation = new Switch(this);
+
+        Ventilation.setText("Ventilation");
+
+        Ventilation.setId(R.id.Ventilation);
+
+        Ventilation.setOnClickListener(this);
+
+        linearLayout.addView(Ventilation, layoutParams);
+    }
+
+
+
+
+
     //создание вспомогательной кнопки всей информации о комнате
     private void GenerateAllInformationButton(LinearLayout linearLayout,
                                               LinearLayout.LayoutParams layoutParams) {
@@ -308,6 +376,10 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
                 //вывести на экран кнпоку света
                 GenerateLightButton(linearLayout, layoutParams);
+
+                GenerateCurtainButton(linearLayout, layoutParams);
+
+                GenerateVentilationButton(linearLayout, layoutParams);
                 break;
 
             //выбрана комната "Bathroom"
