@@ -1,41 +1,36 @@
 package com.example.test;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
 
-    private String ID;
-
-    private String type;
-
+    @SerializedName("description")
+    @Expose
     private String description;
+    @SerializedName("id")
+    @Expose
+    private String id;
+    @SerializedName("objects")
+    @Expose
+    private List<String> objects = new ArrayList<String>();
 
-    private List<Body> bodyList;
 
-    Room(String id, String type, String description, List<Body> bodyList) {
 
-        super();
-
-        this.ID = id;
-        this.type = type;
-        this.description = description;
-        this.bodyList = bodyList;
+    public String GetId() {
+        return id;
     }
 
-    public final String GetId() {
-        return ID;
-    }
-
-    public final String GetType() {
-        return type;
-    }
-
-    public final String GetDescription() {
+    public String GetDescription() {
         return description;
     }
 
-    public final List<Body> GetObjectList() {
-        return bodyList;
+    public List<String> GetObjectList() {
+        return objects;
     }
+    
 
 }

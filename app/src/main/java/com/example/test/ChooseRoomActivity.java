@@ -58,8 +58,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
     Gson gson = new GsonBuilder().create();
 
     private Retrofit retrofit = new Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create(gson))
             .baseUrl(URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 
     private RestInterface restInterface = retrofit.create(RestInterface.class);
@@ -121,7 +121,7 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
             RoomResponse roomResponse = gson.fromJson(response.body().toString(), RoomResponse.class);
 
-            List<Room> roomList = roomResponse.getmRooms();
+            List<Room> roomList = roomResponse.getRooms();
 
             rooms = new Button[roomList.size()];
 

@@ -13,7 +13,7 @@ import retrofit2.http.GET;
 
 public interface RestInterface {
 
-    @GET("/room_list")
+    @GET("/rooms/")
     Call<RoomResponse>getRoomList();
 
     @GET("/objects")
