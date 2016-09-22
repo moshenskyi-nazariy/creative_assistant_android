@@ -17,7 +17,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
-    //переменная для хранения значения переданного из активности Main2Activity
+    //переменная для хранения значения переданного из активности ChooseRoomActivity
     int room;
 
     /*********************************************************/
@@ -55,7 +55,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rooms);
 
-        //получения значения, передающего от активности Main2Activity
+        //получения значения, передающего от активности ChooseRoomActivity
         room = getIntent().getExtras().getInt("Room");
 
         //нахождение элемента экрана по его ID
@@ -304,6 +304,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         Curtain.setText("Curtain");
 
         Curtain.setId(R.id.Curtain);
+
+        Curtain.setOnClickListener(this);
 
         linearLayout.addView(Curtain, layoutParams);
     }
