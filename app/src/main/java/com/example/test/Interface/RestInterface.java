@@ -18,6 +18,10 @@ public interface RestInterface {
     @GET("objects/")
     Call<List<Body>>getObjectList();
 
+    @GET("rooms/")
+    Call<RoomResponse>getObject();
+
+
     //TODO POST запросы
 
 }

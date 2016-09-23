@@ -118,14 +118,16 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         StrictMode.setThreadPolicy(policy);
 
 
-        Call<List<Room>> callObject = restInterface.getRoomList();
+        Call<RoomResponse> callObject = restInterface.getObject();
 
         try {
 
 
-            Response<List<Room>>response = callObject.execute();
+            Response<RoomResponse>response = callObject.execute();
 
-            List<Room> roomList = response.body();
+            RoomResponse roomResponse = response.body();
+
+            List<Room> roomList = roomResponse.getRooms();
 
             int size = roomList.size();
 
