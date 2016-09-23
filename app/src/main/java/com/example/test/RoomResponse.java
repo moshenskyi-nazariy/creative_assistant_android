@@ -13,11 +13,15 @@ public class RoomResponse {
     @Expose
     private List<Room> rooms = new ArrayList<>();
 
-    public List<Room> getRooms() {
-        return rooms;
+    private RoomResponse(List<Room> rooms) {
+
+        this.rooms = rooms;
+
     }
 
+    public List<Room> getRooms() { return rooms; }
+
     public void setRooms(List<Room> mRooms) {
-        this.rooms = mRooms;
+        rooms = mRooms;
     }
 }

@@ -3,12 +3,15 @@
 <resources>
     <item name = "Room1" type="id"/>
     <item name = "Room2" type="id"/>
-    <item name=  "Room3" type="id"/>
-    <item name="Door" type="id"/>
-    <item name="Light" type="id"/>
-    <item name="AllInformation" type="id"/>
-    <item name="Curtain" type="id"/>
-    <item name= "Ventilation" type="id"/>
+    <item name = "Room3" type="id"/>
+    <item name = "Room4" type="id"/>
+    <item name = "Room5" type="id"/>
+    <item name = "Room6" type="id"/>
+    <item name = "Door" type="id"/>
+    <item name = "Light" type="id"/>
+    <item name = "AllInformation" type="id"/>
+    <item name = "Curtain" type="id"/>
+    <item name = "Ventilation" type="id"/>
 
 
 

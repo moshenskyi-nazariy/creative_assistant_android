@@ -16,6 +16,9 @@ import android.widget.Toast;
 import com.example.test.Interface.RestInterface;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,7 +37,7 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
     /*********************************************************/
 
-    private final String URL = "http://api.ks-cube.tk";
+    private final String URL = "http://api.ks-cube.tk/";
 
     /********************************************************/
 
@@ -65,6 +68,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
     private RestInterface restInterface = retrofit.create(RestInterface.class);
 
     Button [] rooms;
+
+    String [] roomNames;
     /*********************************************************/
 
     /*
@@ -113,23 +118,32 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         StrictMode.setThreadPolicy(policy);
 
 
-        Call<RoomResponse> callObject = restInterface.getRoomList();
+        Call<List<Room>> callObject = restInterface.getRoomList();
 
         try {
 
-            Response<RoomResponse> response = callObject.execute();
 
-            RoomResponse roomResponse = gson.fromJson(response.body().toString(), RoomResponse.class);
+            Response<List<Room>>response = callObject.execute();
 
-            List<Room> roomList = roomResponse.getRooms();
+            List<Room> roomList = response.body();
 
-            rooms = new Button[roomList.size()];
+            int size = roomList.size();
+
+            rooms = new Button[size];
+
+            roomNames = new String[size];
 
             for(int i = 0;i < rooms.length;i++) {
 
                 rooms[i] = new Button(this);
                 rooms[i].setOnClickListener(this);
             }
+
+            for(int i = 0; i < rooms.length;i++) {
+
+                rooms[i].setText(roomList.get(i).GetDescription());
+            }
+
 
             for(Room r : roomList) {
 

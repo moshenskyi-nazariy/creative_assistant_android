@@ -19,6 +19,14 @@ public class Room {
     private List<String> objects = new ArrayList<String>();
 
 
+    private Room(String description, String id, List<String> objects) {
+
+        this.description = description;
+
+        this.id = id;
+
+        this.objects = objects;
+    }
 
     public String GetId() {
         return id;
@@ -31,6 +39,17 @@ public class Room {
     public List<String> GetObjectList() {
         return objects;
     }
-    
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setObjects(List<String> objects) {
+        this.objects = objects;
+    }
 
 }
