@@ -9,6 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class roomsActivity extends AppCompatActivity implements View.OnClickListener {
 
     /*
@@ -56,7 +59,9 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_rooms);
 
         //получения значения, передающего от активности ChooseRoomActivity
-        room = getIntent().getExtras().getInt("Room");
+     //   room = getIntent().getExtras().getInt("Room");
+
+        ArrayList<String> objectList = getIntent().getStringArrayListExtra("roomObjectList");
 
         //нахождение элемента экрана по его ID
         linearLayout = (LinearLayout) findViewById(R.id.lineralMain);
@@ -72,6 +77,9 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         //расположение по центру
         layoutParams.gravity = Gravity.CENTER;
 
+        GenerateButtonInRoom(linearLayout, layoutParams, objectList);
+
+        /*
         switch (room) {
             //передано значение 1(выбрана комната "Kitchen")
             case 1:
@@ -94,6 +102,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             default:
                 break;
         }
+        */
     }
 
     /*********************************************************/
@@ -162,6 +171,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                     //показываем сообщение на экране
                     Toast.makeText(this, "Light has turned off", Toast.LENGTH_SHORT).show();
                 }
+                break;
 
             case R.id.Curtain:
 
@@ -373,6 +383,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         switch (roomNumber) {
             //выбрана комната "Kitchen"
             case 1:
+
                 //вывести на экран кнопку двери
                 GenerateDoorButton(linearLayout, layoutParams);
 
@@ -404,6 +415,26 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
             default:
                 break;
+        }
+    }
+
+    public void GenerateButtonInRoom(LinearLayout linearLayout,
+                                     LinearLayout.LayoutParams layoutParams,
+                                     ArrayList<String> objectList) {
+
+        for(String s : objectList) {
+
+            if(s.contains("D"))
+                GenerateDoorButton(linearLayout, layoutParams);
+
+            if(s.contains("SB"))
+                GenerateCurtainButton(linearLayout, layoutParams);
+
+            if(s.contains("Li"))
+                GenerateLightButton(linearLayout, layoutParams);
+
+            if(s.contains("F"))
+                GenerateVentilationButton(linearLayout, layoutParams);
         }
     }
 

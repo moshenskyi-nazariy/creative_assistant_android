@@ -14,22 +14,27 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.test.Interface.RestInterface;
+import com.example.test.Objects.Object;
+import com.example.test.Objects.ObjectsResponse;
+import com.example.test.Rooms.Room;
+import com.example.test.Rooms.RoomsResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ChooseRoomActivity extends AppCompatActivity implements View.OnClickListener {
+import static android.R.id.list;
 
+public class ChooseRoomActivity extends AppCompatActivity implements View.OnClickListener {
 
     /*
     Константы
@@ -40,8 +45,6 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
     private final String URL = "http://api.ks-cube.tk/";
 
     /********************************************************/
-
-
 
     /*
     Объекты классов
@@ -54,6 +57,9 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
     //объект класса intent для перехода или передачи данных на активность LoginActivity
     Intent intent1;
+
+    //объект класса intent для передачи отображения со списком объектов в комнате на roomsActivity
+    Intent mapObjectsIntent;
 
     //параметры для кнопок
     LinearLayout.LayoutParams layoutParams;
@@ -69,7 +75,16 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
     Button [] rooms;
 
-    String [] roomNames;
+    Integer [] ids;
+
+    Response<RoomsResponse> roomResponse;
+
+    Response<ObjectsResponse> objectsResponse;
+
+    Map<String, ArrayList<String>> objectsMap;
+
+    ArrayList<String> arrayList;
+
     /*********************************************************/
 
     /*
@@ -114,55 +129,84 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
+        ids = new Integer[6];
+
+        objectsMap = new HashMap<>();
+
+        arrayList = new ArrayList<>();
+
+        ids[0] = R.id.Room1; // Room1 = Corridor
+        ids[1] = R.id.Room2; // Room2 = Kitchen
+        ids[2] = R.id.Room3; // Room3 = Bathroom
+        ids[3] = R.id.Room4; // Room4 = Bedroom
+        ids[4] = R.id.Room5; // Room5 = Office
+        ids[5] = R.id.Room6; // Room6 = Living Room
+
+
+        //разрешение выполнения синхронных запросов в главном потоке
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-
-        Call<RoomResponse> callObject = restInterface.getObject();
+        Call<RoomsResponse> callObject = restInterface.getObjectWithRoomList();
 
         try {
 
-
-            Response<RoomResponse>response = callObject.execute();
-
-            RoomResponse roomResponse = response.body();
-
-            List<Room> roomList = roomResponse.getRooms();
-
-            int size = roomList.size();
-
-            rooms = new Button[size];
-
-            roomNames = new String[size];
-
-            for(int i = 0;i < rooms.length;i++) {
-
-                rooms[i] = new Button(this);
-                rooms[i].setOnClickListener(this);
-            }
-
-            for(int i = 0; i < rooms.length;i++) {
-
-                rooms[i].setText(roomList.get(i).GetDescription());
-            }
-
-
-            for(Room r : roomList) {
-
-                for(Button b : rooms){
-                    b.setText(r.GetDescription());
-                    //TODO добавить id кнопке
-                }
-
-            }
+            roomResponse = callObject.execute();
 
         } catch (IOException e) {
+
             e.printStackTrace();
         }
+
+        RoomsResponse roomContainer = roomResponse.body();
+
+        List<Room> roomList = roomContainer.getRooms();
+
+        int size = roomList.size();
+
+        rooms = new Button[size];
+
+        for(int i = 0;i < rooms.length;i++) {
+
+            rooms[i] = new Button(this);
+            rooms[i].setOnClickListener(this);
+        }
+
+        for(int i = 0; i < rooms.length;i++) {
+
+            rooms[i].setText(roomList.get(i).GetDescription());
+            rooms[i].setId(ids[i]);
+        }
+
+
+        /*objectsMap - отображение для объектов комнат,
+         *key - имя комнаты
+         *value - список названия объектов в комнате
+         */
+        for(int i = 0;i < size;i++) {
+
+            objectsMap.put(roomList.get(i).GetDescription(),roomList.get(i).GetObjectList() );
+        }
+
+        Call<ObjectsResponse> callObject1 = restInterface.getObjectWithObjectList();
+
+        try {
+
+            objectsResponse = callObject1.execute();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+
+        ObjectsResponse objectContainer = objectsResponse.body();
+
+        List<Object> objectList = objectContainer.GetObjects();
 
         //инициализация объектов класса intent
         intent = new Intent(ChooseRoomActivity.this, roomsActivity.class);
         intent1 = new Intent(ChooseRoomActivity.this, LoginActivity.class);
+        mapObjectsIntent = new Intent(ChooseRoomActivity.this, roomsActivity.class);
 
         //нахождение элементана экране по его ID
         linearLayout = (LinearLayout) findViewById(R.id.lMain);
@@ -178,34 +222,6 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         //расположение по центру
         layoutParams.gravity = Gravity.CENTER;
 
-        /*
-        //инициализация объектов класса Button
-        room1 = new Button(this);
-        room2 = new Button(this);
-        room3 = new Button(this);
-
-        //установка ID для кнопок
-        room1.setId(R.id.Room1);
-        room2.setId(R.id.Room2);
-        room3.setId(R.id.Room3);
-
-        //установка текста для кнопок
-        room1.setText("Kitchen");
-        room2.setText("Bathroom");
-        room3.setText("Bedroom");
-
-        //инициализация массива состоящего из 3 кнопок
-        Button [] Rooms = new Button[3];
-
-        //заполнение массива объектами
-        Rooms[0] = room1;
-        Rooms[1] = room2;
-        Rooms[2] = room3;
-
-        //делаем кнопки кликабельными
-        for (Button Room : Rooms)
-            Room.setOnClickListener(this);
-        */
         //вызываем метод отрисовки кнопок на экран
         GenerateRoomButton(rooms, layoutParams);
     }
@@ -223,40 +239,85 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
         switch (v.getId()) {
 
-            //нажата кнопка "Kitchen"
+            //нажата кнопка "Corridor"
             case R.id.Room1:
                 //помещаем в intent значение 1,
-                intent.putExtra("Room", 1);
+                //intent.putExtra("Room", 1);
+
+                arrayList = objectsMap.get("Corridor");
+
+                mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
 
                 //выводим сообщение на экран
-                Toast.makeText(this, "You have choosen the kitchen", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You have chosen the corridor", Toast.LENGTH_SHORT).show();
 
                 //переходим на активность roomsActivity
-                startActivity(intent);
+                startActivity(mapObjectsIntent);
+                break;
+
+            //нажата кнопка "Kitchen"
+            case R.id.Room2:
+                //помещаем в intent значение 2
+              //  intent.putExtra("Room", 2);
+
+                arrayList = objectsMap.get("Kitchen");
+
+                mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
+
+                //выводим сообщение на экран
+                Toast.makeText(this, "You have chosen the kitchen", Toast.LENGTH_SHORT).show();
+
+                //переходим на активность roomsActivity
+                startActivity(mapObjectsIntent);
                 break;
 
             //нажата кнопка "Bathroom"
-            case R.id.Room2:
-                //помещаем в intent значение 2
-                intent.putExtra("Room", 2);
+            case R.id.Room3:
+                //помещаем в intent значение 3
+              //  intent.putExtra("Room", 3);
+
+                arrayList = objectsMap.get("Bathroom");
+
+                mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
 
                 //выводим сообщение на экран
-                Toast.makeText(this, "You have choosen the bathroom", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You have chosen the bathroom", Toast.LENGTH_SHORT).show();
 
                 //переходим на активность roomsActivity
-                startActivity(intent);
+                startActivity(mapObjectsIntent);
                 break;
 
             //нажата кнопка "Bedroom"
-            case R.id.Room3:
-                //помещаем в intent значение 3
-                intent.putExtra("Room", 3);
+            case R.id.Room4:
 
-                //выводим сообщение на экран
-                Toast.makeText(this, "You have choosen the bedroom", Toast.LENGTH_SHORT).show();
+                arrayList = objectsMap.get("Bedroom");
 
-                //переходим на активность roomsActivity
-                startActivity(intent);
+                mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
+
+                startActivity(mapObjectsIntent);
+                break;
+
+
+            //нажата кнопка "Office"
+            case R.id.Room5:
+
+                arrayList = objectsMap.get("Office");
+
+                mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
+
+                startActivity(mapObjectsIntent);
+
+                break;
+
+            //нажата кнопка "Living Room"
+            case R.id.Room6:
+
+                arrayList = objectsMap.get("Living Room");
+
+                mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
+
+                startActivity(mapObjectsIntent);
+
                 break;
 
             default:

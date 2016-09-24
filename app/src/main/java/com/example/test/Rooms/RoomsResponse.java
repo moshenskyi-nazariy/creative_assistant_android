@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.test.Rooms;
 
 
 import com.google.gson.annotations.Expose;
@@ -7,13 +7,13 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoomResponse {
+public class RoomsResponse {
 
     @SerializedName("rooms")
     @Expose
     private List<Room> rooms = new ArrayList<>();
 
-    private RoomResponse(List<Room> rooms) {
+    private RoomsResponse(List<Room> rooms) {
 
         this.rooms = rooms;
 

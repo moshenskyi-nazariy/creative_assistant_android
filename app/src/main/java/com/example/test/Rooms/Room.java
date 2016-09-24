@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.test.Rooms;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -16,10 +16,10 @@ public class Room {
     private String id;
     @SerializedName("objects")
     @Expose
-    private List<String> objects = new ArrayList<String>();
+    private ArrayList<String> objects = new ArrayList<String>();
 
 
-    private Room(String description, String id, List<String> objects) {
+    private Room(String description, String id, ArrayList<String> objects) {
 
         this.description = description;
 
@@ -36,7 +36,7 @@ public class Room {
         return description;
     }
 
-    public List<String> GetObjectList() {
+    public ArrayList<String> GetObjectList() {
         return objects;
     }
 
@@ -48,7 +48,7 @@ public class Room {
         this.id = id;
     }
 
-    public void setObjects(List<String> objects) {
+    public void setObjects(ArrayList<String> objects) {
         this.objects = objects;
     }
 

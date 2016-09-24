@@ -1,9 +1,9 @@
 package com.example.test.Interface;
 
 
-import com.example.test.Body;
-import com.example.test.Room;
-import com.example.test.RoomResponse;
+import com.example.test.Objects.ObjectsResponse;
+import com.example.test.Rooms.Room;
+import com.example.test.Rooms.RoomsResponse;
 
 import java.util.List;
 
@@ -16,10 +16,10 @@ public interface RestInterface {
     Call<List<Room>>getRoomList();
 
     @GET("objects/")
-    Call<List<Body>>getObjectList();
+    Call<ObjectsResponse>getObjectWithObjectList();
 
     @GET("rooms/")
-    Call<RoomResponse>getObject();
+    Call<RoomsResponse>getObjectWithRoomList();
 
 
     //TODO POST запросы
