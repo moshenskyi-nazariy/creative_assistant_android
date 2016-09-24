@@ -1,19 +1,16 @@
 package com.example.test.Interface;
 
 
+import com.example.test.Messages.Message;
 import com.example.test.Objects.ObjectsResponse;
-import com.example.test.Rooms.Room;
 import com.example.test.Rooms.RoomsResponse;
 
-import java.util.List;
-
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 public interface RestInterface {
-
-    @GET("room_list/")
-    Call<List<Room>>getRoomList();
 
     @GET("objects/")
     Call<ObjectsResponse>getObjectWithObjectList();
@@ -21,7 +18,6 @@ public interface RestInterface {
     @GET("rooms/")
     Call<RoomsResponse>getObjectWithRoomList();
 
-
-    //TODO POST запросы
-
+    @POST("messages/")
+    Call<Message>postMessage(@Body Message message);
 }

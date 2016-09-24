@@ -12,15 +12,19 @@ public class Object {
     @SerializedName("actions")
     @Expose
     private List<String> actions = new ArrayList<String>();
+
     @SerializedName("description")
     @Expose
     private String description;
+
     @SerializedName("id")
     @Expose
     private String id;
+
     @SerializedName("status")
     @Expose
     private String status;
+
     @SerializedName("type")
     @Expose
     private String type;

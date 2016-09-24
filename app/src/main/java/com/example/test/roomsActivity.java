@@ -1,6 +1,7 @@
 package com.example.test;
 
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
@@ -9,10 +10,33 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.test.Interface.RestInterface;
+import com.example.test.Messages.ActionParams;
+import com.example.test.Messages.Body;
+import com.example.test.Messages.Message;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class roomsActivity extends AppCompatActivity implements View.OnClickListener {
+
+    /*
+     Константы
+     */
+
+    /*********************************************************/
+
+    private final String URL = "http://api.ks-cube.tk/";
+
+    /*********************************************************/
 
     /*
     Переменные
@@ -22,6 +46,14 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     //переменная для хранения значения переданного из активности ChooseRoomActivity
     int room;
+
+    String idDoor;
+
+    String idCurtain;
+
+    String idLight;
+
+    String idVentilations;
 
     /*********************************************************/
 
@@ -33,6 +65,21 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     //параметры для кнопок
     LinearLayout.LayoutParams layoutParams;
+
+    Gson gson = new GsonBuilder().create();
+
+    private Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build();
+
+    private RestInterface restInterface = retrofit.create(RestInterface.class);
+
+    ActionParams actionParams = new ActionParams();
+
+    ArrayList<String> objectList;
+
+    Response<Message> response;
 
     /*********************************************************/
 
@@ -58,10 +105,25 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rooms);
 
-        //получения значения, передающего от активности ChooseRoomActivity
-     //   room = getIntent().getExtras().getInt("Room");
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
-        ArrayList<String> objectList = getIntent().getStringArrayListExtra("roomObjectList");
+        objectList = getIntent().getStringArrayListExtra("roomObjectList");
+
+        for(String s : objectList) {
+
+            if(s.contains("D"))
+                idDoor = s;
+
+            if(s.contains("Li"))
+                idLight = s;
+
+            if(s.contains("SB"))
+                idCurtain = s;
+
+            if(s.contains("F"))
+                idVentilations = s;
+        }
 
         //нахождение элемента экрана по его ID
         linearLayout = (LinearLayout) findViewById(R.id.lineralMain);
@@ -79,30 +141,6 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
         GenerateButtonInRoom(linearLayout, layoutParams, objectList);
 
-        /*
-        switch (room) {
-            //передано значение 1(выбрана комната "Kitchen")
-            case 1:
-                //выводим краткую информацию о действиях в кухне
-                GenerateMainInformation(1, layoutParams, linearLayout);
-                break;
-
-            //передано значение 2(выбрана комната "Bathroom")
-            case 2:
-                //выводим краткую информацию о дейстиях в ванной
-                GenerateMainInformation(2, layoutParams, linearLayout);
-                break;
-
-            //передано значение 3(выбрана комната "Bedroom")
-            case 3:
-                //выводим краткую информацию о действиях в спальне
-                GenerateMainInformation(3, layoutParams, linearLayout);
-                break;
-
-            default:
-                break;
-        }
-        */
     }
 
     /*********************************************************/
@@ -129,6 +167,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
             //нажата кнопка "Door"
             case R.id.Door:
+
                 //находим элемент на экране по его ID
                 Switch Door = (Switch) findViewById(R.id.Door);
 
@@ -136,6 +175,9 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                  *необходимо выдать сообщение об открытии двери,
                  *в другом случае нужно сообщить о том что дверь была закрыта*/
                 if(Door.isChecked()) {
+
+                    DoPost("open", idDoor, actionParams);
+
                     //создаём сообщение
                     Toast toast = Toast.makeText(this, "Door has opened", Toast.LENGTH_SHORT);
 
@@ -145,6 +187,9 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                     //выводим сообщение на экран
                     toast.show();
                 } else {
+
+                    DoPost("closed", idDoor, actionParams);
+
                     //выводим сообщение на экран
                     Toast.makeText(this, "Door has closed", Toast.LENGTH_SHORT).show();
                 }
@@ -159,6 +204,9 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                  *то необходимо выдать сообщение о включении света,
                  *в другом случае нужно сообщить о том что свет был выключен*/
                 if(Light.isChecked()) {
+
+                    DoPost("on", idLight, actionParams);
+
                     //инициализируем объект сообщение
                     Toast toast = Toast.makeText(this, "Light has turned on", Toast.LENGTH_SHORT);
 
@@ -168,6 +216,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                     //показываем сообщение
                     toast.show();
                 } else {
+
+                    DoPost("off", idLight, actionParams);
                     //показываем сообщение на экране
                     Toast.makeText(this, "Light has turned off", Toast.LENGTH_SHORT).show();
                 }
@@ -179,12 +229,16 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
                 if(Curtain.isChecked()) {
 
+                    DoPost("open", idCurtain, actionParams);
+
                     Toast toast = Toast.makeText(this, "Curtain has opened", Toast.LENGTH_SHORT);
 
                     toast.setGravity(Gravity.CENTER, 0, 0);
 
                     toast.show();
                 } else {
+
+                    DoPost("closed", idCurtain, actionParams);
 
                     Toast.makeText(this, "Curtain has closed", Toast.LENGTH_SHORT).show();
                 }
@@ -196,12 +250,16 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
                 if(Ventilation.isChecked()) {
 
+                    DoPost("on", idVentilations, actionParams);
+
                     Toast toast = Toast.makeText(this, "Ventilation has opened", Toast.LENGTH_SHORT);
 
                     toast.setGravity(Gravity.CENTER, 0, 0);
 
                     toast.show();
                 } else {
+
+                    DoPost("off", idVentilations, actionParams);
 
                     Toast.makeText(this, "Ventilation has closed", Toast.LENGTH_SHORT).show();
                 }
@@ -436,6 +494,37 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             if(s.contains("F"))
                 GenerateVentilationButton(linearLayout, layoutParams);
         }
+    }
+
+    /*********************************************************/
+
+    public Message GenerateMessage(String action,
+                                   String obj_id,
+                                   ActionParams actionParams) {
+
+        Body body = new Body(action, obj_id, actionParams);
+
+        Message message = new Message(body);
+
+        return message;
+    }
+
+    public Response<Message> DoPost(String action, String id, ActionParams actionParams) {
+
+        Message message = GenerateMessage(action, id, actionParams);
+
+        Call<Message> call = restInterface.postMessage(message);
+
+        try {
+
+            response = call.execute();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+
+        return response;
     }
 
     /*********************************************************/

@@ -12,9 +12,7 @@ public class ObjectsResponse {
     @Expose
     private List<Object> objects = new ArrayList<>();
 
-
     public List<Object> GetObjects() { return objects; }
 
     public void SetObjects(List<Object> objects) { this.objects = objects; }
-
 }

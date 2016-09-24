@@ -32,8 +32,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static android.R.id.list;
-
 public class ChooseRoomActivity extends AppCompatActivity implements View.OnClickListener {
 
     /*
@@ -142,7 +140,6 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         ids[4] = R.id.Room5; // Room5 = Office
         ids[5] = R.id.Room6; // Room6 = Living Room
 
-
         //разрешение выполнения синхронных запросов в главном потоке
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -156,6 +153,7 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         } catch (IOException e) {
 
             e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         RoomsResponse roomContainer = roomResponse.body();
@@ -177,7 +175,6 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
             rooms[i].setText(roomList.get(i).GetDescription());
             rooms[i].setId(ids[i]);
         }
-
 
         /*objectsMap - отображение для объектов комнат,
          *key - имя комнаты
@@ -241,8 +238,6 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
             //нажата кнопка "Corridor"
             case R.id.Room1:
-                //помещаем в intent значение 1,
-                //intent.putExtra("Room", 1);
 
                 arrayList = objectsMap.get("Corridor");
 
@@ -257,8 +252,6 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
             //нажата кнопка "Kitchen"
             case R.id.Room2:
-                //помещаем в intent значение 2
-              //  intent.putExtra("Room", 2);
 
                 arrayList = objectsMap.get("Kitchen");
 
@@ -273,8 +266,6 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
             //нажата кнопка "Bathroom"
             case R.id.Room3:
-                //помещаем в intent значение 3
-              //  intent.putExtra("Room", 3);
 
                 arrayList = objectsMap.get("Bathroom");
 
@@ -294,6 +285,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
                 mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
 
+                Toast.makeText(this, "You have chosen the bedroom", Toast.LENGTH_SHORT).show();
+
                 startActivity(mapObjectsIntent);
                 break;
 
@@ -305,8 +298,9 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
                 mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
 
-                startActivity(mapObjectsIntent);
+                Toast.makeText(this, "You have chosen the office", Toast.LENGTH_SHORT).show();
 
+                startActivity(mapObjectsIntent);
                 break;
 
             //нажата кнопка "Living Room"
@@ -316,8 +310,9 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
                 mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
 
-                startActivity(mapObjectsIntent);
+                Toast.makeText(this, "You have chosen the living room", Toast.LENGTH_SHORT).show();
 
+                startActivity(mapObjectsIntent);
                 break;
 
             default:
