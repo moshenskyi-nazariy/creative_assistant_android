@@ -28,7 +28,7 @@ public class Message {
 
         this.source = "android";
 
-        this.event = "action_request";
+        this.event = "action_requested";
 
         this.body = body;
     }

@@ -188,7 +188,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                     toast.show();
                 } else {
 
-                    DoPost("closed", idDoor, actionParams);
+                    DoPost("close", idDoor, actionParams);
 
                     //выводим сообщение на экран
                     Toast.makeText(this, "Door has closed", Toast.LENGTH_SHORT).show();
@@ -205,7 +205,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                  *в другом случае нужно сообщить о том что свет был выключен*/
                 if(Light.isChecked()) {
 
-                    DoPost("on", idLight, actionParams);
+                    DoPost("set_on", idLight, actionParams);
 
                     //инициализируем объект сообщение
                     Toast toast = Toast.makeText(this, "Light has turned on", Toast.LENGTH_SHORT);
@@ -217,7 +217,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                     toast.show();
                 } else {
 
-                    DoPost("off", idLight, actionParams);
+                    DoPost("set_off", idLight, actionParams);
                     //показываем сообщение на экране
                     Toast.makeText(this, "Light has turned off", Toast.LENGTH_SHORT).show();
                 }
@@ -238,7 +238,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                     toast.show();
                 } else {
 
-                    DoPost("closed", idCurtain, actionParams);
+                    DoPost("close", idCurtain, actionParams);
 
                     Toast.makeText(this, "Curtain has closed", Toast.LENGTH_SHORT).show();
                 }
@@ -250,7 +250,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
                 if(Ventilation.isChecked()) {
 
-                    DoPost("on", idVentilations, actionParams);
+                    DoPost("set_on", idVentilations, actionParams);
 
                     Toast toast = Toast.makeText(this, "Ventilation has opened", Toast.LENGTH_SHORT);
 
@@ -259,7 +259,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                     toast.show();
                 } else {
 
-                    DoPost("off", idVentilations, actionParams);
+                    DoPost("set_off", idVentilations, actionParams);
 
                     Toast.makeText(this, "Ventilation has closed", Toast.LENGTH_SHORT).show();
                 }
@@ -392,9 +392,6 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
         linearLayout.addView(Ventilation, layoutParams);
     }
-
-
-
 
 
     //создание вспомогательной кнопки всей информации о комнате
