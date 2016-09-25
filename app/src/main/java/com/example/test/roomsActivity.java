@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -19,12 +21,10 @@ import com.example.test.Messages.PostResult;
 import com.example.test.Objects.Object;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -631,6 +631,106 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         return response;
     }
 
+    /*********************************************************/
+
+     /*
+    Методы для работы с меню
+     */
+
+    /*********************************************************/
+
+    //Создание menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    //Обработчик нажатия кнопок в menu
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        //получаем ID нажатого элемента в menu
+        int id = item.getItemId();
+
+        switch (id) {
+
+            //нажата кнопка "Quit"
+            case R.id.update:
+
+                if (idDoor != null) {
+
+                    Call<Object> objectById = restInterface.getObjectById(idDoor);
+
+                    try {
+
+                        Response<Object> response = objectById.execute();
+
+                        stateSwitches.put(idDoor, response.body().getStatus());
+
+                    } catch (IOException e) {
+                        startActivity(errorActivity);
+
+                    }
+                }
+
+                if (idLight != null) {
+
+                    Call<Object> objectById = restInterface.getObjectById(idLight);
+
+                    try {
+
+                        Response<Object> response = objectById.execute();
+
+                        stateSwitches.put(idLight, response.body().getStatus());
+
+                    } catch (IOException e) {
+                        startActivity(errorActivity);
+                    }
+                }
+
+                if (idCurtain != null) {
+
+                    Call<Object> objectById = restInterface.getObjectById(idCurtain);
+
+                    try {
+
+                        Response<Object> response = objectById.execute();
+
+                        stateSwitches.put(idCurtain, response.body().getStatus());
+
+                    } catch (IOException e) {
+                        startActivity(errorActivity);
+                    }
+                }
+
+                if (idVentilations != null) {
+
+                    Call<Object> objectById = restInterface.getObjectById(idVentilations);
+
+                    try {
+
+                        Response<Object> response = objectById.execute();
+
+                        stateSwitches.put(idVentilations, response.body().getStatus());
+
+                    } catch (IOException e) {
+                        startActivity(errorActivity);
+                    }
+
+                }
+
+                RemoveAllView(linearLayout);
+
+                GenerateButtonInRoom(linearLayout, layoutParams, objectList, stateSwitches);
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     /*********************************************************/
 
 }
