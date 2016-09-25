@@ -1,5 +1,6 @@
 package com.example.test;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -14,12 +15,17 @@ import com.example.test.Interface.RestInterface;
 import com.example.test.Messages.ActionParams;
 import com.example.test.Messages.Body;
 import com.example.test.Messages.Message;
+import com.example.test.Messages.PostResult;
+import com.example.test.Objects.Object;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -55,6 +61,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     String idVentilations;
 
+    Map<String,String> stateSwitches = new HashMap<>();
+
     /*********************************************************/
 
     /*
@@ -79,7 +87,9 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     ArrayList<String> objectList;
 
-    Response<Message> response;
+    Response<PostResult> response;
+
+    Intent errorActivity;
 
     /*********************************************************/
 
@@ -105,6 +115,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rooms);
 
+        errorActivity = new Intent(roomsActivity.this, errorActivity.class);
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -125,6 +137,74 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 idVentilations = s;
         }
 
+        if(idDoor != null) {
+
+            Call<Object> objectById = restInterface.getObjectById(idDoor);
+
+            try {
+
+                Response<Object> response = objectById.execute();
+
+                stateSwitches.put(idDoor, response.body().getStatus());
+
+            } catch (IOException e) {
+                startActivity(errorActivity);
+
+                return;
+            }
+        }
+
+        if(idLight != null) {
+
+            Call<Object> objectById = restInterface.getObjectById(idLight);
+
+            try {
+
+                Response<Object> response = objectById.execute();
+
+                stateSwitches.put(idLight, response.body().getStatus());
+
+            } catch (IOException e) {
+                startActivity(errorActivity);
+
+                return;
+            }
+        }
+
+        if(idCurtain != null) {
+
+            Call<Object> objectById = restInterface.getObjectById(idCurtain);
+
+            try {
+
+                Response<Object> response = objectById.execute();
+
+                stateSwitches.put(idCurtain, response.body().getStatus());
+
+            } catch (IOException e) {
+                startActivity(errorActivity);
+
+                return;
+            }
+        }
+
+        if(idVentilations != null) {
+
+            Call<Object> objectById = restInterface.getObjectById(idVentilations);
+
+            try {
+
+                Response<Object> response = objectById.execute();
+
+                stateSwitches.put(idVentilations, response.body().getStatus());
+
+            } catch (IOException e) {
+                startActivity(errorActivity);
+
+                return;
+            }
+        }
+
         //нахождение элемента экрана по его ID
         linearLayout = (LinearLayout) findViewById(R.id.lineralMain);
 
@@ -139,7 +219,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         //расположение по центру
         layoutParams.gravity = Gravity.CENTER;
 
-        GenerateButtonInRoom(linearLayout, layoutParams, objectList);
+        GenerateButtonInRoom(linearLayout, layoutParams, objectList, stateSwitches);
 
     }
 
@@ -162,7 +242,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 RemoveAllView(linearLayout);
 
                 //отображаем все действия в комнате на экране
-                GenerateALlButton(room);
+                //GenerateALlButton(room);
                 break;
 
             //нажата кнопка "Door"
@@ -278,7 +358,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
      */
 
     /*********************************************************/
-
+/*
     private void GenerateMainInformation(int roomNumber,
                                          LinearLayout.LayoutParams layoutParams,
                                          LinearLayout linearLayout) {
@@ -316,7 +396,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
-
+*/
     /*********************************************************/
 
     /*
@@ -327,9 +407,15 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     //создание "кнопки" двери
     private void GenerateDoorButton(LinearLayout linearLayout,
-                                    LinearLayout.LayoutParams layoutParams) {
+                                    LinearLayout.LayoutParams layoutParams,
+                                    String status) {
         //инициализация объекта Switch
         Switch Door = new Switch(this);
+
+        if(status.equals("opened"))
+            Door.setChecked(true);
+        else
+            Door.setChecked(false);
 
         //установка текста
         Door.setText("Door");
@@ -346,9 +432,15 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     //создание "кнопки" света
     private void GenerateLightButton(LinearLayout linearLayout,
-                                     LinearLayout.LayoutParams layoutParams) {
+                                     LinearLayout.LayoutParams layoutParams,
+                                     String status ) {
         //инициализация объекта Switch
         Switch Light = new Switch(this);
+
+        if(status.equals("on"))
+            Light.setChecked(true);
+        else
+            Light.setChecked(false);
 
         //установка текста
         Light.setText("Light");
@@ -365,9 +457,15 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     //создание "кнопки" шторы
     private void GenerateCurtainButton(LinearLayout linearLayout,
-                                     LinearLayout.LayoutParams layoutParams) {
+                                       LinearLayout.LayoutParams layoutParams,
+                                       String status ) {
 
         Switch Curtain = new Switch(this);
+
+        if(status.equals("opened"))
+            Curtain.setChecked(true);
+        else
+            Curtain.setChecked(false);
 
         Curtain.setText("Curtain");
 
@@ -380,9 +478,15 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     //создания "кнопки" вентиляции
     private void GenerateVentilationButton(LinearLayout linearLayout,
-                                           LinearLayout.LayoutParams layoutParams) {
+                                           LinearLayout.LayoutParams layoutParams,
+                                           String status) {
 
         Switch Ventilation = new Switch(this);
+
+        if(status.equals("on"))
+            Ventilation.setChecked(true);
+        else
+            Ventilation.setChecked(false);
 
         Ventilation.setText("Ventilation");
 
@@ -432,7 +536,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
      */
 
     /*********************************************************/
-
+/*
     private void GenerateALlButton(int roomNumber) {
 
         switch (roomNumber) {
@@ -472,24 +576,26 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
-
+*/
     public void GenerateButtonInRoom(LinearLayout linearLayout,
                                      LinearLayout.LayoutParams layoutParams,
-                                     ArrayList<String> objectList) {
+                                     ArrayList<String> objectList,
+                                     Map<String,String> stateSwitchesMap) {
 
         for(String s : objectList) {
 
             if(s.contains("D"))
-                GenerateDoorButton(linearLayout, layoutParams);
+                GenerateDoorButton(linearLayout, layoutParams, stateSwitchesMap.get(s));
+
 
             if(s.contains("SB"))
-                GenerateCurtainButton(linearLayout, layoutParams);
+                GenerateCurtainButton(linearLayout, layoutParams, stateSwitchesMap.get(s));
 
             if(s.contains("Li"))
-                GenerateLightButton(linearLayout, layoutParams);
+                GenerateLightButton(linearLayout, layoutParams, stateSwitchesMap.get(s));
 
             if(s.contains("F"))
-                GenerateVentilationButton(linearLayout, layoutParams);
+                GenerateVentilationButton(linearLayout, layoutParams, stateSwitchesMap.get(s));
         }
     }
 
@@ -506,11 +612,11 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         return message;
     }
 
-    public Response<Message> DoPost(String action, String id, ActionParams actionParams) {
+    public Response<PostResult> DoPost(String action, String id, ActionParams actionParams) {
 
         Message message = GenerateMessage(action, id, actionParams);
 
-        Call<Message> call = restInterface.postMessage(message);
+        Call<PostResult> call = restInterface.postMessage(message);
 
         try {
 
@@ -518,11 +624,13 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
         } catch (IOException e) {
 
-            e.printStackTrace();
+            startActivity(errorActivity);
+
         }
 
         return response;
     }
 
     /*********************************************************/
+
 }

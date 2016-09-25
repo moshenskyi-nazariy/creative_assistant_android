@@ -59,6 +59,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
     //объект класса intent для передачи отображения со списком объектов в комнате на roomsActivity
     Intent mapObjectsIntent;
 
+    Intent errorIntent;
+
     //параметры для кнопок
     LinearLayout.LayoutParams layoutParams;
 
@@ -83,6 +85,7 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
     ArrayList<String> arrayList;
 
+    boolean IsError = false;
     /*********************************************************/
 
     /*
@@ -93,11 +96,6 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
     //область на экране для размещения элементов
     LinearLayout linearLayout;
-
-    //кнопки комнат
-    Button room1;
-    Button room2;
-    Button room3;
 
     /*********************************************************/
 
@@ -127,6 +125,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
+        errorIntent = new Intent(ChooseRoomActivity.this, errorActivity.class);
+
         ids = new Integer[6];
 
         objectsMap = new HashMap<>();
@@ -152,8 +152,9 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
         } catch (IOException e) {
 
-            e.printStackTrace();
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            startActivity(errorIntent);
+
+            return;
         }
 
         RoomsResponse roomContainer = roomResponse.body();
@@ -193,17 +194,21 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
         } catch (IOException e) {
 
-            e.printStackTrace();
+            startActivity(errorIntent);
+
+            return;
         }
 
         ObjectsResponse objectContainer = objectsResponse.body();
 
         List<Object> objectList = objectContainer.GetObjects();
 
+
         //инициализация объектов класса intent
         intent = new Intent(ChooseRoomActivity.this, roomsActivity.class);
         intent1 = new Intent(ChooseRoomActivity.this, LoginActivity.class);
         mapObjectsIntent = new Intent(ChooseRoomActivity.this, roomsActivity.class);
+
 
         //нахождение элементана экране по его ID
         linearLayout = (LinearLayout) findViewById(R.id.lMain);
@@ -289,7 +294,6 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
                 startActivity(mapObjectsIntent);
                 break;
-
 
             //нажата кнопка "Office"
             case R.id.Room5:
