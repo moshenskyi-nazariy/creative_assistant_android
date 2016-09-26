@@ -40,7 +40,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
-    private final String URL = "http://api.ks-cube.tk/";
+    private final String URL = "http://192.168.88.70/";
 
     /*********************************************************/
 
@@ -137,73 +137,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 idVentilations = s;
         }
 
-        if(idDoor != null) {
 
-            Call<Object> objectById = restInterface.getObjectById(idDoor);
-
-            try {
-
-                Response<Object> response = objectById.execute();
-
-                stateSwitches.put(idDoor, response.body().getStatus());
-
-            } catch (IOException e) {
-                startActivity(errorActivity);
-
-                return;
-            }
-        }
-
-        if(idLight != null) {
-
-            Call<Object> objectById = restInterface.getObjectById(idLight);
-
-            try {
-
-                Response<Object> response = objectById.execute();
-
-                stateSwitches.put(idLight, response.body().getStatus());
-
-            } catch (IOException e) {
-                startActivity(errorActivity);
-
-                return;
-            }
-        }
-
-        if(idCurtain != null) {
-
-            Call<Object> objectById = restInterface.getObjectById(idCurtain);
-
-            try {
-
-                Response<Object> response = objectById.execute();
-
-                stateSwitches.put(idCurtain, response.body().getStatus());
-
-            } catch (IOException e) {
-                startActivity(errorActivity);
-
-                return;
-            }
-        }
-
-        if(idVentilations != null) {
-
-            Call<Object> objectById = restInterface.getObjectById(idVentilations);
-
-            try {
-
-                Response<Object> response = objectById.execute();
-
-                stateSwitches.put(idVentilations, response.body().getStatus());
-
-            } catch (IOException e) {
-                startActivity(errorActivity);
-
-                return;
-            }
-        }
+        stateSwitches = getStateSwitches(stateSwitches);
 
         //нахождение элемента экрана по его ID
         linearLayout = (LinearLayout) findViewById(R.id.lineralMain);
@@ -732,5 +667,73 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     /*********************************************************/
+
+    public Map<String, String> getStateSwitches(Map<String, String> stateSwitches ) {
+
+        if (idDoor != null) {
+
+            Call<Object> objectById = restInterface.getObjectById(idDoor);
+
+            try {
+
+                Response<Object> response = objectById.execute();
+
+                stateSwitches.put(idDoor, response.body().getStatus());
+
+            } catch (IOException e) {
+                startActivity(errorActivity);
+
+            }
+        }
+
+        if (idLight != null) {
+
+            Call<Object> objectById = restInterface.getObjectById(idLight);
+
+            try {
+
+                Response<Object> response = objectById.execute();
+
+                stateSwitches.put(idLight, response.body().getStatus());
+
+            } catch (IOException e) {
+                startActivity(errorActivity);
+            }
+        }
+
+        if (idCurtain != null) {
+
+            Call<Object> objectById = restInterface.getObjectById(idCurtain);
+
+            try {
+
+                Response<Object> response = objectById.execute();
+
+                stateSwitches.put(idCurtain, response.body().getStatus());
+
+            } catch (IOException e) {
+                startActivity(errorActivity);
+            }
+        }
+
+        if (idVentilations != null) {
+
+            Call<Object> objectById = restInterface.getObjectById(idVentilations);
+
+            try {
+
+                Response<Object> response = objectById.execute();
+
+                stateSwitches.put(idVentilations, response.body().getStatus());
+
+            } catch (IOException e) {
+                startActivity(errorActivity);
+            }
+
+        }
+
+
+        return stateSwitches;
+    }
 
 }

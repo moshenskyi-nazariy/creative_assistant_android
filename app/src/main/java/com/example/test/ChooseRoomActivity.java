@@ -40,7 +40,7 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
     /*********************************************************/
 
-    private final String URL = "http://api.ks-cube.tk/";
+    private final String URL = "http://192.168.88.70/";
 
     /********************************************************/
 
