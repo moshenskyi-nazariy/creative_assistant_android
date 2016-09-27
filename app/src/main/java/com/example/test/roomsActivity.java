@@ -40,7 +40,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
-    private final String URL = "http://192.168.88.70/";
+    private final String URL = "http://api.ks-cube.tk/";
 
     /*********************************************************/
 
@@ -594,67 +594,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             //нажата кнопка "Quit"
             case R.id.update:
 
-                if (idDoor != null) {
-
-                    Call<Object> objectById = restInterface.getObjectById(idDoor);
-
-                    try {
-
-                        Response<Object> response = objectById.execute();
-
-                        stateSwitches.put(idDoor, response.body().getStatus());
-
-                    } catch (IOException e) {
-                        startActivity(errorActivity);
-
-                    }
-                }
-
-                if (idLight != null) {
-
-                    Call<Object> objectById = restInterface.getObjectById(idLight);
-
-                    try {
-
-                        Response<Object> response = objectById.execute();
-
-                        stateSwitches.put(idLight, response.body().getStatus());
-
-                    } catch (IOException e) {
-                        startActivity(errorActivity);
-                    }
-                }
-
-                if (idCurtain != null) {
-
-                    Call<Object> objectById = restInterface.getObjectById(idCurtain);
-
-                    try {
-
-                        Response<Object> response = objectById.execute();
-
-                        stateSwitches.put(idCurtain, response.body().getStatus());
-
-                    } catch (IOException e) {
-                        startActivity(errorActivity);
-                    }
-                }
-
-                if (idVentilations != null) {
-
-                    Call<Object> objectById = restInterface.getObjectById(idVentilations);
-
-                    try {
-
-                        Response<Object> response = objectById.execute();
-
-                        stateSwitches.put(idVentilations, response.body().getStatus());
-
-                    } catch (IOException e) {
-                        startActivity(errorActivity);
-                    }
-
-                }
+                stateSwitches = getStateSwitches(stateSwitches);
 
                 RemoveAllView(linearLayout);
 

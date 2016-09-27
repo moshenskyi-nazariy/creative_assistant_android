@@ -14,7 +14,6 @@ public class errorActivity extends AppCompatActivity implements View.OnClickList
 
     Intent intent1;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,12 +28,10 @@ public class errorActivity extends AppCompatActivity implements View.OnClickList
         intent = new Intent(errorActivity.this, ChooseRoomActivity.class);
 
         intent1 = new Intent(errorActivity.this, LoginActivity.class);
-
     }
 
     @Override
     public void onClick(View v) {
-
 
         switch(v.getId()) {
             case R.id.retryButton:
@@ -53,7 +50,7 @@ public class errorActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_main,menu);
+        getMenuInflater().inflate(R.menu.error_menu,menu);
         return true;
     }
 
