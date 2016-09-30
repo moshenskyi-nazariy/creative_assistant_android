@@ -3,6 +3,7 @@ package com.example.test;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
@@ -104,6 +105,14 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
+
+    /*
+    Переменная для взаимодействия с фичей pull to refresh
+    */
+
+    private SwipeRefreshLayout swipeContainer;
+    /*********************************************************/
+
     /*
     Метод вызываемый при создании активности roomsActivity
      */
@@ -114,6 +123,31 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rooms);
+        //Ищем наш контейнер с фичей Pull To Refresh
+        swipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipeContainer);
+        //Устанавливаем слушателя для события оттяжения окна вниз.
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            //указываем необходимое действие на оттяжение окна вниз
+            @Override
+            public void onRefresh() {
+                //получаем состояние всех переключателей с сервера
+                stateSwitches = getStateSwitches(stateSwitches);
+                //удаляем все с экрана
+                RemoveAllView(linearLayout);
+                //генерируем все заново
+                GenerateButtonInRoom(linearLayout, layoutParams, objectList, stateSwitches);
+                //завершаем обновление данных
+                swipeContainer.setRefreshing(false);
+
+            }
+        });
+
+        //setColorSchemeResources - устанавливаем цвета, которыми будет переливатся наша анимация. 
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
 
         errorActivity = new Intent(roomsActivity.this, errorActivity.class);
 
