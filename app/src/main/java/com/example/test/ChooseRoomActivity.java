@@ -64,13 +64,18 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
     //параметры для кнопок
     LinearLayout.LayoutParams layoutParams;
 
+    //конвертор gson для преобразования из JSON в JAVA объект
     Gson gson = new GsonBuilder().create();
 
+    //создание объекта библиотеки Retrofit
     private Retrofit retrofit = new Retrofit.Builder()
+            //указание базового адреса
             .baseUrl(URL)
+            //добавление конвертора
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 
+    // создание интерфейса для выполнения запросов
     private RestInterface restInterface = retrofit.create(RestInterface.class);
 
     Button [] rooms;
@@ -142,10 +147,12 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        //вызываем у интерфейса метод по получению объекта со списком комнат
         Call<RoomsResponse> callObject = restInterface.getObjectWithRoomList();
 
         try {
 
+            //делаем запрос и записываем ответ от сервера в переменную
             roomResponse = callObject.execute();
 
         } catch (IOException e) {
@@ -155,8 +162,10 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
             return;
         }
 
+        // записываю тело ответа в JAVA объект
         RoomsResponse roomContainer = roomResponse.body();
 
+        //получаю список всех комнат
         List<Room> roomList = roomContainer.getRooms();
 
         int size = roomList.size();
@@ -238,6 +247,11 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
 
         switch (v.getId()) {
+
+            /*
+             В зависимости от того какая комната была выбрана, извлекаем список действий по комнате
+             из словаря objectMap и передаем этот список на roomsActivity
+             */
 
             //нажата кнопка "Corridor"
             case R.id.Room1:

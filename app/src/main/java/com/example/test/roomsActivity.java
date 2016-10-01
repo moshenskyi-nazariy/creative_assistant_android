@@ -151,11 +151,14 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
         errorActivity = new Intent(roomsActivity.this, errorActivity.class);
 
+        //разрешение использования синронных запросов в главном потоке
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        //получение списка объекта в комнате
         objectList = getIntent().getStringArrayListExtra("roomObjectList");
 
+        //получение ID элементов
         for(String s : objectList) {
 
             if(s.contains("D"))
@@ -171,7 +174,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 idVentilations = s;
         }
 
-
+        //получение состояний переключателей
         stateSwitches = getStateSwitches(stateSwitches);
 
         //нахождение элемента экрана по его ID
@@ -188,6 +191,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         //расположение по центру
         layoutParams.gravity = Gravity.CENTER;
 
+        //отрисовка всех действий в комнате на экран
         GenerateButtonInRoom(linearLayout, layoutParams, objectList, stateSwitches);
 
     }
@@ -221,8 +225,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 Switch Door = (Switch) findViewById(R.id.Door);
 
                 /*Если switch переключают в "активное" состояние, то
-                 *необходимо выдать сообщение об открытии двери,
-                 *в другом случае нужно сообщить о том что дверь была закрыта*/
+                 *необходимо сделать пост запрос об открытии двери и выдать сообщение об открытии двери,
+                 *в другом случае нужно отправить пост запрос о закрытии сообщить о том что дверь была закрыта*/
                 if(Door.isChecked()) {
 
                     DoPost("open", idDoor, actionParams);
@@ -546,6 +550,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 */
+
     public void GenerateButtonInRoom(LinearLayout linearLayout,
                                      LinearLayout.LayoutParams layoutParams,
                                      ArrayList<String> objectList,
@@ -555,7 +560,6 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
             if(s.contains("D"))
                 GenerateDoorButton(linearLayout, layoutParams, stateSwitchesMap.get(s));
-
 
             if(s.contains("SB"))
                 GenerateCurtainButton(linearLayout, layoutParams, stateSwitchesMap.get(s));
@@ -570,6 +574,12 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
+      /*
+       Методы генерации сообщения для пост запроса
+       */
+
+    /*********************************************************/
+
     public Message GenerateMessage(String action,
                                    String obj_id,
                                    ActionParams actionParams) {
@@ -580,6 +590,15 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
         return message;
     }
+
+    /*********************************************************/
+
+
+      /*
+       Методы для выполнения пост запроса
+       */
+
+    /*********************************************************/
 
     public Response<PostResult> DoPost(String action, String id, ActionParams actionParams) {
 
@@ -640,6 +659,13 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 return super.onOptionsItemSelected(item);
         }
     }
+    /*********************************************************/
+
+
+    /*
+     Получение состояния переключателей
+     */
+
     /*********************************************************/
 
     public Map<String, String> getStateSwitches(Map<String, String> stateSwitches ) {
@@ -709,5 +735,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
         return stateSwitches;
     }
+
+    /*********************************************************/
 
 }
