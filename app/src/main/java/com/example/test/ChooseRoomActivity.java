@@ -50,11 +50,11 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
     /*********************************************************/
 
-    //объект класса intent для перехода или передачи данных на активность roomsActivity
-    Intent intent;
+    //объект класса RoomsIntent для перехода или передачи данных на активность roomsActivity
+    Intent RoomsIntent;
 
-    //объект класса intent для перехода или передачи данных на активность LoginActivity
-    Intent intent1;
+    //объект класса LoginIntent для перехода или передачи данных на активность LoginActivity
+    Intent LoginIntent;
 
     //объект класса intent для передачи отображения со списком объектов в комнате на roomsActivity
     Intent mapObjectsIntent;
@@ -212,8 +212,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
 
         //инициализация объектов класса intent
-        intent = new Intent(ChooseRoomActivity.this, roomsActivity.class);
-        intent1 = new Intent(ChooseRoomActivity.this, LoginActivity.class);
+        RoomsIntent = new Intent(ChooseRoomActivity.this, roomsActivity.class);
+        LoginIntent = new Intent(ChooseRoomActivity.this, LoginActivity.class);
         mapObjectsIntent = new Intent(ChooseRoomActivity.this, roomsActivity.class);
 
 
@@ -359,7 +359,7 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
      */
 
     /*********************************************************/
-
+/*
     //Создание menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -379,18 +379,18 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
             //нажата кнопка "Quit"
             case R.id.quit:
-                //помещаем в intent1 значение 1
-                intent1.putExtra("Quit",1);
+                //помещаем в LoginIntent значение 1
+                LoginIntent.putExtra("Quit",1);
 
                 //переходим на активность LoginActivity
-                startActivity(intent1);
+                startActivity(LoginIntent);
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
+*/
     /*********************************************************/
 }
 

@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences sh;
 
     //объект класса intent для перехода или передачи данных на другую активность
-    Intent intent;
+    Intent ChooseRoomIntent;
 
     /*********************************************************/
 
@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //инициализаци интента,который ведёт к антивности ChooseRoomActivity
-        intent = new Intent(LoginActivity.this, ChooseRoomActivity.class);
+        ChooseRoomIntent = new Intent(LoginActivity.this, ChooseRoomActivity.class);
 
         //получение значения, передающегося от активности ChooseRoomActivity
         //если ничего не пришло,то по умолчанию присваивается 0
@@ -138,10 +138,10 @@ public class LoginActivity extends AppCompatActivity {
                         editor.apply();
 
                         //вызываем активность ChooseRoomActivity
-                        startActivity(intent);
+                        startActivity(ChooseRoomIntent);
                     } else {
                        //вызываем активность ChooseRoomActivity
-                       startActivity(intent);
+                       startActivity(ChooseRoomIntent);
                     }
 
                 } else {
@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if(s1.equals("admin") && s2.equals("admin"))
                 //вызов активности ChooseRoomActivity
-                startActivity(intent);
+                startActivity(ChooseRoomIntent);
         }
     }
 
