@@ -69,5 +69,24 @@
         android:layout_alignEnd="@+id/password"
         android:checked="false" />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:layout_above="@+id/textView2"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignStart="@+id/textView2"
+        android:id="@+id/editForURL" />
+
+    <TextView
+        android:text="URL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/URL"
+        android:layout_above="@+id/editForURL"
+        android:layout_alignLeft="@+id/editForURL"
+        android:layout_alignStart="@+id/editForURL" />
+
 
 </RelativeLayout>

@@ -68,6 +68,8 @@ public class LoginActivity extends AppCompatActivity {
     //поле ввода пароля
     EditText pass;
 
+    EditText url;
+
     //checkbox если пользователь захочет сохранить логин и пароль
     CheckBox RememberCheckBox;
 
@@ -97,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
         //нахождение элементов экрана по их ID
         login = (EditText) findViewById(R.id.login);
         pass = (EditText) findViewById(R.id.password);
+        url = (EditText) findViewById(R.id.editForURL);
         RememberCheckBox = (CheckBox) findViewById(R.id.checkBox);
     }
 
@@ -119,6 +122,9 @@ public class LoginActivity extends AppCompatActivity {
                  *проверяем нажата ли кнопка сheckbox, в другом случае выдаём сообщение о
                  *том что пользователь ввёл некорректные данные*/
                 if(login.getText().toString().equals(LoginForChecking) && pass.getText().toString().equals(PasswordForChecking)) {
+
+
+                    ChooseRoomIntent.putExtra("url",url.getText().toString());
 
                     /*если нажата кнопка checkbox для проверки сохранения логина и пароля, то
                      *обнуляем переменную, сохраняем логин и пароль и вызываем активность ChooseRoomActivity,

@@ -41,7 +41,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
-    private final String URL = "http://api.ks-cube.tk/";
+  //  private final String URL = "http://api.ks-cube.tk/";
 
     /*********************************************************/
 
@@ -77,12 +77,18 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     Gson gson = new GsonBuilder().create();
 
+    /*
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 
     private RestInterface restInterface = retrofit.create(RestInterface.class);
+    */
+
+    private Retrofit retrofit;
+
+    private RestInterface restInterface;
 
     ActionParams actionParams = new ActionParams();
 
@@ -104,7 +110,6 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
     LinearLayout linearLayout;
 
     /*********************************************************/
-
 
     /*
     Переменная для взаимодействия с фичей pull to refresh
@@ -148,15 +153,25 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-
         errorActivity = new Intent(roomsActivity.this, errorActivity.class);
 
         //разрешение использования синронных запросов в главном потоке
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+
+
+
         //получение списка объекта в комнате
         objectList = getIntent().getStringArrayListExtra("roomObjectList");
+        String url = getIntent().getStringExtra("url");
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        restInterface = retrofit.create(RestInterface.class);
 
         //получение ID элементов
         for(String s : objectList) {
@@ -731,7 +746,6 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             }
 
         }
-
 
         return stateSwitches;
     }

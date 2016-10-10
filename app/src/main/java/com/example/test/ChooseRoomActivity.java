@@ -40,7 +40,9 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
     /*********************************************************/
 
-    private final String URL = "http://api.ks-cube.tk/";
+  //  private final String URL = "http://api.ks-cube.tk/";
+
+    private String url;
 
     /********************************************************/
 
@@ -67,6 +69,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
     //конвертор gson для преобразования из JSON в JAVA объект
     Gson gson = new GsonBuilder().create();
 
+
+    /*
     //создание объекта библиотеки Retrofit
     private Retrofit retrofit = new Retrofit.Builder()
             //указание базового адреса
@@ -77,7 +81,7 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
     // создание интерфейса для выполнения запросов
     private RestInterface restInterface = retrofit.create(RestInterface.class);
-
+    */
     Button [] rooms;
 
     Integer [] ids;
@@ -128,9 +132,17 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        errorIntent = new Intent(ChooseRoomActivity.this, errorActivity.class);
-
         ids = new Integer[6];
+
+        url = getIntent().getStringExtra("url");
+
+        Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(url)
+                            .addConverterFactory(GsonConverterFactory.create(gson))
+                            .build();
+
+        RestInterface restInterface = retrofit.create(RestInterface.class);
+
 
         objectsMap = new HashMap<>();
 
@@ -215,6 +227,7 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         RoomsIntent = new Intent(ChooseRoomActivity.this, roomsActivity.class);
         LoginIntent = new Intent(ChooseRoomActivity.this, LoginActivity.class);
         mapObjectsIntent = new Intent(ChooseRoomActivity.this, roomsActivity.class);
+        errorIntent = new Intent(ChooseRoomActivity.this, errorActivity.class);
 
 
         //нахождение элементана экране по его ID
@@ -260,6 +273,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
                 mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
 
+                mapObjectsIntent.putExtra("url", url);
+
                 //выводим сообщение на экран
                 Toast.makeText(this, "You have chosen the corridor", Toast.LENGTH_SHORT).show();
 
@@ -273,6 +288,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
                 arrayList = objectsMap.get("Kitchen");
 
                 mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
+
+                mapObjectsIntent.putExtra("url", url);
 
                 //выводим сообщение на экран
                 Toast.makeText(this, "You have chosen the kitchen", Toast.LENGTH_SHORT).show();
@@ -288,6 +305,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
                 mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
 
+                mapObjectsIntent.putExtra("url", url);
+
                 //выводим сообщение на экран
                 Toast.makeText(this, "You have chosen the bathroom", Toast.LENGTH_SHORT).show();
 
@@ -302,6 +321,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
                 mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
 
+                mapObjectsIntent.putExtra("url", url);
+
                 Toast.makeText(this, "You have chosen the bedroom", Toast.LENGTH_SHORT).show();
 
                 startActivity(mapObjectsIntent);
@@ -314,6 +335,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
                 mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
 
+                mapObjectsIntent.putExtra("url", url);
+
                 Toast.makeText(this, "You have chosen the office", Toast.LENGTH_SHORT).show();
 
                 startActivity(mapObjectsIntent);
@@ -325,6 +348,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
                 arrayList = objectsMap.get("Living Room");
 
                 mapObjectsIntent.putStringArrayListExtra("roomObjectList", arrayList);
+
+                mapObjectsIntent.putExtra("url", url);
 
                 Toast.makeText(this, "You have chosen the living room", Toast.LENGTH_SHORT).show();
 
