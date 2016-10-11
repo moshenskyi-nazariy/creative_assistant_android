@@ -1,0 +1,56 @@
+language: android
+jdk: oraclejdk8
+env:
+  global:
+  - ANDROID_TARGET=android-22
+  - ANDROID_ABI=armeabi-v7a
+  - BUILD_TOOLS-VERSION=24.0.2
+  - BUILD_TOOLS=build-tools-${BUILD-TOOLS-VERSION}
+  - APK_PATH=$HOME/creative_assistant_t${TRAVIS_BUILD_NUMBER}.apk
+  - secure: Y3EkqWo5INuDN4pJC8EgkCnLiluNlvGh3UT/K80ySt+pCkMVbupnckPgG8c3VkpXNFxe03B+X2x1tL0/Trq9PhfU9PWzQn5sDC9bXHlaRWyKkXQUsZh85H8KbgWHHYRDNOdVs3mknLaNaO+XhAuwZHXkjG/ELk4wG3R0QmtTjGjjpYAJSRY+vH4m4UEQBfYd+Hz/8ty/6kRANXyQdQO/HpD7jcoThsq4Jl98QsuKu7jPLFq2XLi67/aLf+nu9/M/zMZVNK/qKm7a5La+NabmTCYjAW1ocd8g9bQQLDsQJMieSIkVJgLtGXYxNbBRu0C3UoZFwHlgYGYH8bREnzoXsV5BDR0B7vBIaAf4DXw/uwB6kF0FogEBvrr/B+aw5kemNwaLW61wP0vdbhDrwO+Giw1zG03lRg/t2K23d5ULeVFVl2rgZh8iucxN7Q9PjK5CpwiRJDOD86bkeNGxytKJs2C63jNnpCn22kzfb1KHDjSaVoU7Q1OweGiJwPMjMDDLYu3ZbwEpEZlTlBsYJRe9i6+Gl21BdrT9RhKcd7mJkjJleQUXzt6gB00ceKKyEHX0yit9xgxl+TrgC0F/j0HWsnTnjqLzCJgfxYZHB0LrHLTJffF0zhyDmnu6/A74NzzKxTPy4kXnGpjr3nUEAYJy9XnTjZ4QKNLgZYKqTMbXE5Y=
+  - secure: TjZzF5Iq9GyX/eZUqh41XoOOhI4qivGQPumBopFV5+7nAcosTh3REuzd1l18a8aLdQ2KKyDPA56r0BJmOJ1Usd9veHYv6taWFDNbXuI2azQ/612olJZC7L96WwnmKVdXoOAEfrKpXaEz9uha5OT74mHm5tplKuX3Zk8t7kZcAc/zISzeEPI+0HISzxZSmiaNEHFaxFITnvY47nDJc5iwCC7/GGh0ZSPmAiBra+E6yTiHyQTxzlVGMFtcVjlYlB0HLjQnDOHaTRIMNi8LP86B+4iEeXMsMWW4ywuE493J28hf4U2ZTDPq6udIjdfaiazM1YpJ8IXiIsfB0a4huwkVnyqLB82tKMBSJhu8kNOcD0ByRzr9qv4NRaXsDGdmRoq1zbUqH2fu4XugnGNW87S5UjF6B+jkXLbVn3dTU8RgBfFf8SPyDDj+ls8nNPZ2zgzo/m32qbY8f3TiXH+I8GzPwnhhSjIwoExNSB7oK/ZAcny06eqpYrhkABDQ3VKFQCBQeFASl4VxzBCeRqhibWcTtJ6BanKSqIFcKnQEU1pJeWD9Qdlz/x5Y/ZuTl+79aCUbNSnA/CTeBTJi55eoejGaFfd0nS1tuUxU/kNa+hUfoIwZSOJJMa7fH3l3mXfneYcQwI8ehDFJ6p+nv7EyDt7bnox+ahTnKe8HUtGBNxYLv0w=
+android:
+  components:
+  - tools
+  - platform-tools
+  - build-tools-24.0.2
+  - android-24
+  - android-22
+  - extra-android-m2repository
+  - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
+  licenses:
+  - android-sdk-preview-license-.+
+  - android-sdk-license-.+
+  - google-gdk-license-.+
+before_cache:
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+before_script:
+- echo no | android create avd --force -n test -t ${ANDROID_TARGET} --abi ${ANDROID_ABI}
+- emulator -avd test -no-audio -no-window &
+- android-wait-for-emulator
+- adb shell input keyevent 82 &
+script:
+- "./gradlew build connectedCheck"
+before_deploy:
+- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 app/build/outputs/apk/app-release-unsigned.apk
+  creative_client_test -keystore $TRAVIS_BUILD_DIR/.keystore -storepass $storepass
+  -keypass $keypass
+- "${ANDROID_HOME}/build-tools/24.0.2/zipalign 4 app/build/outputs/apk/app-release-unsigned.apk
+  ${APK_PATH}"
+deploy:
+  provider: releases
+  api_key:
+    secure: bXO6mpQgTWt5c1ZW4F8kX3Qfg5o6aW88EQWurUGE7hE8WgCkkAhsw2tSGkjNuqkIqGMsYSKEZFl7+8+nQdyZK8NbJkMCWmY3iElmNMZct/1Fyx3eu2zDTwCYLRIQXDODPo1jcJ964j9CKSzjbNuvzFGxeV2YXZRf+6MMG4RPzP3rN3iM8Ta6iv3mWe49rWNj9RTjfXX0oBW2Sy7lzWQ0o4ttLt6s9MX2b9AE63CKnu8ewVV5Vd/xZ1olcvNWPsBRB6PcqrTzveFtX6tDGeV8XEkhphXyJsn9Z7ROt1BGPI9XkmqcVFQxua5J7sT+M8YAeAFqdH1LCR3892/+t09enBrufSRyITvXCGwTtHD42WHCbUkcs5qj+jY8yV+SaN7X7YyxTWSKW6ZGrzp49dWfhHu4sUF3hyz1X10RrOzWSJKFsQ1cg8WpQCu8vt9S7+tkFOvusQ2bvyTtoGG1V3r0SZKFB9hNmL2+78bOLDJrkFBksy46dtjCkGys+oYLnHCJbKKKKdirE9xXtut0ANpB2+QhPYrIlb1jEmnMQY7mlQWDCNkupm06oRX+cQSkdcScCVjiGHtl+tylY6C++7DeR02yFBTZM7Dm74cB51IwqeUZwsOPU2p+ov8ucDEw5pfHdNUJZD6SCG+pNhszgjjEmsT9v4vT2eDEBvKnnBB7gRs=
+  file: "${APK_PATH}"
+  file_glob: 'true'
+  skip_cleanup: true
+  on:
+    repo: dot-cat/shp_android_clients
+    branch: travis_ci
+before_install:
+- openssl aes-256-cbc -K $encrypted_c57facf09bea_key -iv $encrypted_c57facf09bea_iv
+  -in .keystore.enc -out .keystore -d
