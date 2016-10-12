@@ -23,6 +23,14 @@ import com.example.test.Objects.Object;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.eclipse.paho.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +41,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
+
 public class roomsActivity extends AppCompatActivity implements View.OnClickListener {
 
     /*
@@ -41,7 +51,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
-  //  private final String URL = "http://api.ks-cube.tk/";
+    //  private final String URL = "http://api.ks-cube.tk/";
 
     /*********************************************************/
 
@@ -159,11 +169,10 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-
-
-
         //получение списка объекта в комнате
         objectList = getIntent().getStringArrayListExtra("roomObjectList");
+
+        //получения url
         String url = getIntent().getStringExtra("url");
 
         retrofit = new Retrofit.Builder()
@@ -172,6 +181,60 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 .build();
 
         restInterface = retrofit.create(RestInterface.class);
+
+        /*
+        final Toast toast = new Toast(this.getApplicationContext());
+
+        toast.makeText(this,"Connection lost",Toast.LENGTH_SHORT);
+
+        final MqttAndroidClient mqttAndroidClient = new MqttAndroidClient(this.getApplicationContext(), url, "client");
+
+        mqttAndroidClient.setCallback(new MqttCallback() {
+            @Override
+            public void connectionLost(Throwable cause) {
+                toast.show();
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                System.out.println("Message Arrived! :" + topic + ":" + new String(message.getPayload()));
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+                System.out.println("Delivery complete");
+            }
+        });
+
+        try {
+            mqttAndroidClient.connect(null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+
+                    try {
+                        System.out.println("Subscribing to /test");
+                        mqttAndroidClient.subscribe("/test", 0);
+                        System.out.println("Subscribed to /test");
+                        System.out.println("Publishing message..");
+                        mqttAndroidClient.publish("/test", new MqttMessage("hello!".getBytes()));
+                    } catch (MqttException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+
+                }
+            });
+
+
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+
+        */
 
         //получение ID элементов
         for(String s : objectList) {
@@ -187,6 +250,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
             if(s.contains("F"))
                 idVentilations = s;
+
         }
 
         //получение состояний переключателей
@@ -208,7 +272,6 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
         //отрисовка всех действий в комнате на экран
         GenerateButtonInRoom(linearLayout, layoutParams, objectList, stateSwitches);
-
     }
 
     /*********************************************************/
@@ -320,7 +383,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
                     DoPost("set_on", idVentilations, actionParams);
 
-                    Toast toast = Toast.makeText(this, "Ventilation has opened", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(this, "Ventilation has turned on", Toast.LENGTH_SHORT);
 
                     toast.setGravity(Gravity.CENTER, 0, 0);
 
@@ -329,7 +392,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
                     DoPost("set_off", idVentilations, actionParams);
 
-                    Toast.makeText(this, "Ventilation has closed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Ventilation has turned off", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -659,7 +722,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
         switch (id) {
 
-            //нажата кнопка "Quit"
+            //нажата кнопка "Update"
             case R.id.update:
 
                 stateSwitches = getStateSwitches(stateSwitches);
@@ -702,7 +765,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if (idLight != null) {
-
+  
             Call<Object> objectById = restInterface.getObjectById(idLight);
 
             try {
