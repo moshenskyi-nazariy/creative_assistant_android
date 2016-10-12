@@ -62,6 +62,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     String idVentilations;
 
+
     Map<String,String> stateSwitches = new HashMap<>();
 
     /*********************************************************/
@@ -131,7 +132,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         //Ищем наш контейнер с фичей Pull To Refresh
         swipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipeContainer);
         //Устанавливаем слушателя для события оттяжения окна вниз.
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout
+                .OnRefreshListener() {
             //указываем необходимое действие на оттяжение окна вниз
             @Override
             public void onRefresh() {
@@ -140,7 +142,10 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 //удаляем все с экрана
                 RemoveAllView(linearLayout);
                 //генерируем все заново
-                GenerateButtonInRoom(linearLayout, layoutParams, objectList, stateSwitches);
+                GenerateButtonInRoom(linearLayout
+                        ,layoutParams
+                        ,objectList
+                        ,stateSwitches);
                 //завершаем обновление данных
                 swipeContainer.setRefreshing(false);
 
@@ -153,18 +158,25 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        errorActivity = new Intent(roomsActivity.this, errorActivity.class);
+        errorActivity = new Intent(roomsActivity.this
+                ,errorActivity.class);
 
         //разрешение использования синронных запросов в главном потоке
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.ThreadPolicy policy = new StrictMode
+                    .ThreadPolicy
+                    .Builder()
+                    .permitAll()
+                    .build();
         StrictMode.setThreadPolicy(policy);
 
 
 
 
         //получение списка объекта в комнате
-        objectList = getIntent().getStringArrayListExtra("roomObjectList");
-        String url = getIntent().getStringExtra("url");
+        objectList = getIntent()
+                .getStringArrayListExtra("roomObjectList");
+        String url = getIntent()
+                .getStringExtra("url");
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(url)
@@ -187,18 +199,24 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
             if(s.contains("F"))
                 idVentilations = s;
+
         }
 
         //получение состояний переключателей
         stateSwitches = getStateSwitches(stateSwitches);
+
 
         //нахождение элемента экрана по его ID
         linearLayout = (LinearLayout) findViewById(R.id.lineralMain);
 
         //инициализация объекта класса LinearLayout.LayoutParams
         //WRAP_CONTENT - размер кнопок будет в зависимости от текста внутри
-        layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams = new LinearLayout.LayoutParams(LinearLayout
+                .LayoutParams
+                    .WRAP_CONTENT
+                ,LinearLayout
+                    .LayoutParams
+                    .WRAP_CONTENT);
 
         //отступ сверху
         layoutParams.topMargin = 50;
@@ -207,7 +225,10 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         layoutParams.gravity = Gravity.CENTER;
 
         //отрисовка всех действий в комнате на экран
-        GenerateButtonInRoom(linearLayout, layoutParams, objectList, stateSwitches);
+        GenerateButtonInRoom(linearLayout
+                ,layoutParams
+                ,objectList
+                ,stateSwitches);
 
     }
 
@@ -219,6 +240,44 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
+
+    private void CheckValueIsChecked(int _id
+            ,String _stringIdType
+            ,String _action1
+            ,String _action2
+            ,String _textToShow1
+            ,String _textToShow2){
+
+        Switch value = (Switch) findViewById(_id);
+
+        if(value.isChecked()) {
+
+            DoPost(_action1
+                    ,_stringIdType
+                    ,actionParams);
+
+            Toast toast = Toast.makeText(this
+                    ,_textToShow1
+                    ,Toast.LENGTH_SHORT);
+
+            toast.setGravity(Gravity.CENTER
+                    ,0
+                    ,0);
+
+            toast.show();
+        } else {
+
+            DoPost(_action2
+                    ,_stringIdType
+                    ,actionParams);
+
+            Toast.makeText(this
+                    ,_textToShow2
+                    ,Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
     @Override
     public void onClick(View v) {
 
@@ -228,111 +287,47 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             case R.id.AllInformation:
                 //убираем все элементы с экрана
                 RemoveAllView(linearLayout);
-
                 //отображаем все действия в комнате на экране
                 //GenerateALlButton(room);
                 break;
 
             //нажата кнопка "Door"
             case R.id.Door:
-
-                //находим элемент на экране по его ID
-                Switch Door = (Switch) findViewById(R.id.Door);
-
-                /*Если switch переключают в "активное" состояние, то
-                 *необходимо сделать пост запрос об открытии двери и выдать сообщение об открытии двери,
-                 *в другом случае нужно отправить пост запрос о закрытии сообщить о том что дверь была закрыта*/
-                if(Door.isChecked()) {
-
-                    DoPost("open", idDoor, actionParams);
-
-                    //создаём сообщение
-                    Toast toast = Toast.makeText(this, "Door has opened", Toast.LENGTH_SHORT);
-
-                    //ставим сообщению параметр, с помощью которого оно будет выводится по центру
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-
-                    //выводим сообщение на экран
-                    toast.show();
-                } else {
-
-                    DoPost("close", idDoor, actionParams);
-
-                    //выводим сообщение на экран
-                    Toast.makeText(this, "Door has closed", Toast.LENGTH_SHORT).show();
-                }
+                CheckValueIsChecked(R.id.Door
+                        ,idDoor
+                        ,"open"
+                        ,"close"
+                        ,"Door has opened"
+                        ,"Door has closed");
                 break;
 
             //нажата кнопка "Light"
             case R.id.Light:
-                //находим элемент на экране по его ID
-                Switch Light = (Switch) findViewById(R.id.Light);
-
-                /*Если switch переключают в "активное" состояние,
-                 *то необходимо выдать сообщение о включении света,
-                 *в другом случае нужно сообщить о том что свет был выключен*/
-                if(Light.isChecked()) {
-
-                    DoPost("set_on", idLight, actionParams);
-
-                    //инициализируем объект сообщение
-                    Toast toast = Toast.makeText(this, "Light has turned on", Toast.LENGTH_SHORT);
-
-                    //ставим сообщению параметр, с помощью которого оно будет выводится по центру
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-
-                    //показываем сообщение
-                    toast.show();
-                } else {
-
-                    DoPost("set_off", idLight, actionParams);
-                    //показываем сообщение на экране
-                    Toast.makeText(this, "Light has turned off", Toast.LENGTH_SHORT).show();
-                }
+                CheckValueIsChecked(R.id.Light
+                        ,idLight
+                        ,"set_on"
+                        ,"set_off"
+                        ,"Light has turned on"
+                        ,"Light has turned off");
                 break;
 
             case R.id.Curtain:
-
-                Switch Curtain = (Switch) findViewById(R.id.Curtain);
-
-                if(Curtain.isChecked()) {
-
-                    DoPost("open", idCurtain, actionParams);
-
-                    Toast toast = Toast.makeText(this, "Curtain has opened", Toast.LENGTH_SHORT);
-
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-
-                    toast.show();
-                } else {
-
-                    DoPost("close", idCurtain, actionParams);
-
-                    Toast.makeText(this, "Curtain has closed", Toast.LENGTH_SHORT).show();
-                }
+                CheckValueIsChecked(R.id.Curtain
+                        ,idCurtain
+                        ,"open"
+                        ,"close"
+                        ,"Curtain has opened"
+                        ,"Curtain has closed");
                 break;
 
             case R.id.Ventilation:
-
-                Switch Ventilation = (Switch) findViewById(R.id.Ventilation);
-
-                if(Ventilation.isChecked()) {
-
-                    DoPost("set_on", idVentilations, actionParams);
-
-                    Toast toast = Toast.makeText(this, "Ventilation has opened", Toast.LENGTH_SHORT);
-
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-
-                    toast.show();
-                } else {
-
-                    DoPost("set_off", idVentilations, actionParams);
-
-                    Toast.makeText(this, "Ventilation has closed", Toast.LENGTH_SHORT).show();
-                }
+                CheckValueIsChecked(R.id.Ventilation
+                        ,idVentilations
+                        ,"set_on"
+                        ,"set_off"
+                        ,"Ventilation has opened"
+                        ,"Ventilation has closed");
                 break;
-
 
             default:
                 break;
@@ -393,98 +388,26 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
-    //создание "кнопки" двери
-    private void GenerateDoorButton(LinearLayout linearLayout,
-                                    LinearLayout.LayoutParams layoutParams,
-                                    String status) {
-        //инициализация объекта Switch
-        Switch Door = new Switch(this);
 
-        if(status.equals("opened"))
-            Door.setChecked(true);
-        else
-            Door.setChecked(false);
-
-        //установка текста
-        Door.setText("Door");
-
-        //установка ID
-        Door.setId(R.id.Door);
-
-        //установка обработчика нажатий на Switch двери
-        Door.setOnClickListener(this);
-
-        //добавление "кнопки" двери в linearLayout
-        linearLayout.addView(Door, layoutParams);
-    }
-
-    //создание "кнопки" света
-    private void GenerateLightButton(LinearLayout linearLayout,
-                                     LinearLayout.LayoutParams layoutParams,
-                                     String status ) {
-        //инициализация объекта Switch
-        Switch Light = new Switch(this);
-
-        if(status.equals("on"))
-            Light.setChecked(true);
-        else
-            Light.setChecked(false);
-
-        //установка текста
-        Light.setText("Light");
-
-        //установка ID
-        Light.setId(R.id.Light);
-
-        //установка обработчика нажатий на Switch света
-        Light.setOnClickListener(this);
-
-        //добавление "кнопки" света в linearLayout
-        linearLayout.addView(Light, layoutParams);
-    }
-
-    //создание "кнопки" шторы
-    private void GenerateCurtainButton(LinearLayout linearLayout,
+    private void GenerateTypeButton(LinearLayout linearLayout,
                                        LinearLayout.LayoutParams layoutParams,
-                                       String status ) {
+                                       String status, String _status, String _textToSet, int _id ) {
 
-        Switch Curtain = new Switch(this);
+        Switch modul = new Switch(this);
 
-        if(status.equals("opened"))
-            Curtain.setChecked(true);
+        if(status.equals(_status))
+            modul.setChecked(true);
         else
-            Curtain.setChecked(false);
+            modul.setChecked(false);
 
-        Curtain.setText("Curtain");
+        modul.setText(_textToSet);
 
-        Curtain.setId(R.id.Curtain);
+        modul.setId(_id);
 
-        Curtain.setOnClickListener(this);
+        modul.setOnClickListener(this);
 
-        linearLayout.addView(Curtain, layoutParams);
+        linearLayout.addView(modul, layoutParams);
     }
-
-    //создания "кнопки" вентиляции
-    private void GenerateVentilationButton(LinearLayout linearLayout,
-                                           LinearLayout.LayoutParams layoutParams,
-                                           String status) {
-
-        Switch Ventilation = new Switch(this);
-
-        if(status.equals("on"))
-            Ventilation.setChecked(true);
-        else
-            Ventilation.setChecked(false);
-
-        Ventilation.setText("Ventilation");
-
-        Ventilation.setId(R.id.Ventilation);
-
-        Ventilation.setOnClickListener(this);
-
-        linearLayout.addView(Ventilation, layoutParams);
-    }
-
 
     //создание вспомогательной кнопки всей информации о комнате
     private void GenerateAllInformationButton(LinearLayout linearLayout,
@@ -566,24 +489,45 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
     }
 */
 
-    public void GenerateButtonInRoom(LinearLayout linearLayout,
-                                     LinearLayout.LayoutParams layoutParams,
-                                     ArrayList<String> objectList,
-                                     Map<String,String> stateSwitchesMap) {
+    public void GenerateButtonInRoom(LinearLayout linearLayout
+            ,LinearLayout.LayoutParams layoutParams
+            ,ArrayList<String> objectList
+            ,Map<String,String> stateSwitchesMap) {
 
         for(String s : objectList) {
 
             if(s.contains("D"))
-                GenerateDoorButton(linearLayout, layoutParams, stateSwitchesMap.get(s));
+                GenerateTypeButton(linearLayout
+                        ,layoutParams
+                        ,stateSwitchesMap.get(s)
+                        ,"opened"
+                        ,"Door"
+                        ,R.id.Door) ;
 
             if(s.contains("SB"))
-                GenerateCurtainButton(linearLayout, layoutParams, stateSwitchesMap.get(s));
+                GenerateTypeButton(linearLayout
+                        ,layoutParams
+                        ,stateSwitchesMap.get(s)
+                        ,"opened"
+                        ,"Curtain"
+                        ,R.id.Curtain);
 
             if(s.contains("Li"))
-                GenerateLightButton(linearLayout, layoutParams, stateSwitchesMap.get(s));
+                GenerateTypeButton(linearLayout
+                        ,layoutParams
+                        ,stateSwitchesMap.get(s)
+                        ,"on"
+                        ,"Light"
+                        ,R.id.Light);
 
             if(s.contains("F"))
-                GenerateVentilationButton(linearLayout, layoutParams, stateSwitchesMap.get(s));
+                GenerateTypeButton(linearLayout
+                        ,layoutParams
+                        ,stateSwitchesMap.get(s)
+                        ,"on"
+                        ,"Ventilation"
+                        ,R.id.Ventilation);
+
         }
     }
 
@@ -595,9 +539,9 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
-    public Message GenerateMessage(String action,
-                                   String obj_id,
-                                   ActionParams actionParams) {
+    public Message GenerateMessage(String action
+            ,String obj_id
+            ,ActionParams actionParams) {
 
         Body body = new Body(action, obj_id, actionParams);
 
@@ -615,9 +559,13 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
-    public Response<PostResult> DoPost(String action, String id, ActionParams actionParams) {
+    public Response<PostResult> DoPost(String action
+            ,String id
+            ,ActionParams actionParams) {
 
-        Message message = GenerateMessage(action, id, actionParams);
+        Message message = GenerateMessage(action
+                ,id
+                ,actionParams);
 
         Call<PostResult> call = restInterface.postMessage(message);
 
@@ -683,70 +631,36 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
+    private void CheckToException(String _id)
+    {
+        if (_id != null) {
+
+            Call<Object> objectById = restInterface.getObjectById(_id);
+
+            try {
+
+                Response<Object> response = objectById.execute();
+
+                stateSwitches.put(_id
+                        ,response
+                                .body()
+                                .getStatus());
+
+            } catch (IOException e) {
+                startActivity(errorActivity);
+
+            }
+        }
+    }
+
+
     public Map<String, String> getStateSwitches(Map<String, String> stateSwitches ) {
 
-        if (idDoor != null) {
-
-            Call<Object> objectById = restInterface.getObjectById(idDoor);
-
-            try {
-
-                Response<Object> response = objectById.execute();
-
-                stateSwitches.put(idDoor, response.body().getStatus());
-
-            } catch (IOException e) {
-                startActivity(errorActivity);
-
-            }
-        }
-
-        if (idLight != null) {
-
-            Call<Object> objectById = restInterface.getObjectById(idLight);
-
-            try {
-
-                Response<Object> response = objectById.execute();
-
-                stateSwitches.put(idLight, response.body().getStatus());
-
-            } catch (IOException e) {
-                startActivity(errorActivity);
-            }
-        }
-
-        if (idCurtain != null) {
-
-            Call<Object> objectById = restInterface.getObjectById(idCurtain);
-
-            try {
-
-                Response<Object> response = objectById.execute();
-
-                stateSwitches.put(idCurtain, response.body().getStatus());
-
-            } catch (IOException e) {
-                startActivity(errorActivity);
-            }
-        }
-
-        if (idVentilations != null) {
-
-            Call<Object> objectById = restInterface.getObjectById(idVentilations);
-
-            try {
-
-                Response<Object> response = objectById.execute();
-
-                stateSwitches.put(idVentilations, response.body().getStatus());
-
-            } catch (IOException e) {
-                startActivity(errorActivity);
-            }
-
-        }
-
+        CheckToException(idDoor);
+        CheckToException(idLight);
+        CheckToException(idCurtain);
+        CheckToException(idVentilations);
+        CheckToException(idDoor);
         return stateSwitches;
     }
 
