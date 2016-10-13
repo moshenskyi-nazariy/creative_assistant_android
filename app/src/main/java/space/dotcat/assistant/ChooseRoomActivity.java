@@ -1,6 +1,7 @@
 package space.dotcat.assistant;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +41,10 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
     //  private final String URL = "http://api.ks-cube.tk/";
 
     private String url;
+
+    private final String APP_SETTINGS = "my settings";
+
+    private final static String URL = "url111";
 
     /********************************************************/
 
@@ -90,6 +95,8 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
     Map<String, ArrayList<String>> objectsMap;
 
     ArrayList<String> arrayList;
+
+    SharedPreferences sh;
     /*********************************************************/
 
     /*
@@ -133,7 +140,13 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_room);
         ids = new Integer[6];
+
+        sh = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
+
         url = getIntent().getStringExtra("url");
+
+        if(url == null)
+            url = sh.getString(URL,"");
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
@@ -404,6 +417,18 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
     }
 */
     /*********************************************************/
+
+
+    public void onPause() {
+
+        super.onPause();
+
+        SharedPreferences.Editor ed = sh.edit();
+
+        ed.putString(URL, url);
+        ed.apply();
+    }
+
 }
 
 

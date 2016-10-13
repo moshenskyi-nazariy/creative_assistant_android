@@ -7,5 +7,10 @@
         android:orderInCategory="100"
         android:title="Update"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/quit"
+        android:orderInCategory="100"
+        android:title="Log out"
+        app:showAsAction="never"/>
 
 </menu>

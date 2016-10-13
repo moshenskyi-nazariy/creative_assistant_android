@@ -1,6 +1,7 @@
 package space.dotcat.assistant;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -43,6 +44,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
   //  private final String URL = "http://api.ks-cube.tk/";
 
+      private final String APP_SETTINGS = "my settings";
+
     /*********************************************************/
 
     /*
@@ -61,6 +64,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
     String idLight;
 
     String idVentilations;
+
+    String idPlayer;
 
 
     Map<String,String> stateSwitches = new HashMap<>();
@@ -99,6 +104,10 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     Intent errorActivity;
 
+    Intent intent1;
+
+    SharedPreferences sh;
+
     /*********************************************************/
 
     /*
@@ -129,6 +138,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rooms);
+
         //Ищем наш контейнер с фичей Pull To Refresh
         swipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipeContainer);
         //Устанавливаем слушателя для события оттяжения окна вниз.
@@ -160,6 +170,9 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
         errorActivity = new Intent(roomsActivity.this
                 ,errorActivity.class);
+
+        intent1 = new Intent(roomsActivity.this,
+                LoginActivity.class);
 
         //разрешение использования синронных запросов в главном потоке
         StrictMode.ThreadPolicy policy = new StrictMode
@@ -200,6 +213,8 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             if(s.contains("F"))
                 idVentilations = s;
 
+            if(s.contains("PLAY"))
+                idPlayer = s;
         }
 
         //получение состояний переключателей
@@ -327,6 +342,15 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                         ,"set_off"
                         ,"Ventilation has opened"
                         ,"Ventilation has closed");
+                break;
+
+            case R.id.Player:
+                CheckValueIsChecked(R.id.Player
+                        ,idPlayer
+                        ,"play"
+                        ,"stop"
+                        ,"Player has started"
+                        ,"PLayer has stopped");
                 break;
 
             default:
@@ -528,6 +552,14 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                         ,"Ventilation"
                         ,R.id.Ventilation);
 
+            if(s.contains("PLAY"))
+                GenerateTypeButton(linearLayout,
+                        layoutParams,
+                        stateSwitches.get(s),
+                        "playing",
+                        "Player",
+                        R.id.Player);
+
         }
     }
 
@@ -618,6 +650,15 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
                 return true;
 
+            case R.id.quit:
+
+                //помещаем в intent1 значение 1
+                intent1.putExtra("Quit",1);
+
+                //переходим на активность LoginActivity
+                startActivity(intent1);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -661,6 +702,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         CheckToException(idCurtain);
         CheckToException(idVentilations);
         CheckToException(idDoor);
+        CheckToException(idPlayer);
         return stateSwitches;
     }
 
