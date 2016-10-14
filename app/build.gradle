@@ -4,7 +4,7 @@ android {
     buildToolsVersion "24.0.2"
 
     defaultConfig {
-        applicationId "space.datcat.assistant"
+        applicationId "space.dotcat.assistant"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
