@@ -177,14 +177,30 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
         //вызываем у интерфейса метод по получению объекта со списком комнат
         CheckConnectingToServer("RoomList");
 
+        if(roomResponse.body() == null) {
+
+            SharedPreferences.Editor ed = sh.edit();
+
+            ed.putString(URL, url);
+            ed.apply();
+
+            startActivity(errorIntent);
+            return;
+        }
+
+
         // записываю тело ответа в JAVA объект
         RoomsResponse roomContainer = roomResponse.body();
-
+        
         //получаю список всех комнат
         GenerateButton(roomContainer);
 
         CheckConnectingToServer("ObjectList");
 
+        if(objectsResponse.body() == null) {
+            startActivity(errorIntent);
+            return;
+        }
         ObjectsResponse objectContainer = objectsResponse.body();
 
         List<Object> objectList = objectContainer.GetObjects();
