@@ -27,6 +27,7 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -45,6 +46,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
   //  private final String URL = "http://api.ks-cube.tk/";
 
       private final String APP_SETTINGS = "my settings";
+
 
     /*********************************************************/
 
@@ -66,6 +68,18 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
     String idVentilations;
 
     String idPlayer;
+
+    List<String> idsDoor = new ArrayList<>();
+
+    List<String> idsCurtain = new ArrayList<>();
+
+    List<String> idsLight = new ArrayList<>();
+
+    List<String> idsVentilation = new ArrayList<>();
+
+    List<String> idsPlayer = new ArrayList<>();
+
+    int i = 0;
 
 
     Map<String,String> stateSwitches = new HashMap<>();
@@ -99,6 +113,10 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
     ActionParams actionParams = new ActionParams();
 
     ArrayList<String> objectList;
+
+    List<List<String>> objectIds = new ArrayList<>();
+
+    ArrayList<Integer> ids;
 
     Response<PostResult> response;
 
@@ -139,6 +157,13 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rooms);
 
+
+        ids = new ArrayList<Integer>();
+
+        ids.add(R.id.Light);
+        ids.add(R.id.Light1);
+
+
         //Ищем наш контейнер с фичей Pull To Refresh
         swipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipeContainer);
         //Устанавливаем слушателя для события оттяжения окна вниз.
@@ -148,7 +173,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onRefresh() {
                 //получаем состояние всех переключателей с сервера
-                stateSwitches = getStateSwitches(stateSwitches);
+                stateSwitches = getStateSwitches(objectIds);
                 //удаляем все с экрана
                 RemoveAllView(linearLayout);
                 //генерируем все заново
@@ -182,9 +207,6 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                     .build();
         StrictMode.setThreadPolicy(policy);
 
-
-
-
         //получение списка объекта в комнате
         objectList = getIntent()
                 .getStringArrayListExtra("roomObjectList");
@@ -201,24 +223,33 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
         //получение ID элементов
         for(String s : objectList) {
 
-            if(s.contains("D"))
-                idDoor = s;
+            if(s.contains("D")) {
+                idsDoor.add(s);
+                objectIds.add(idsDoor);
+            }
 
-            if(s.contains("Li"))
-                idLight = s;
+            if(s.contains("Li")) {
+                idsLight.add(s);
+                objectIds.add(idsLight);
+            }
 
-            if(s.contains("SB"))
-                idCurtain = s;
+            if(s.contains("SB")) {
+                idsCurtain.add(s);
+                objectIds.add(idsCurtain);
+            }
 
-            if(s.contains("F"))
-                idVentilations = s;
-
-            if(s.contains("PLAY"))
-                idPlayer = s;
+            if(s.contains("F")) {
+                idsVentilation.add(s);
+                objectIds.add(idsVentilation);
+            }
+            if(s.contains("PLAY")) {
+                idsPlayer.add(s);
+                objectIds.add(idsPlayer);
+            }
         }
 
         //получение состояний переключателей
-        stateSwitches = getStateSwitches(stateSwitches);
+        stateSwitches = getStateSwitches(objectIds);
 
 
         //нахождение элемента экрана по его ID
@@ -244,7 +275,6 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                 ,layoutParams
                 ,objectList
                 ,stateSwitches);
-
     }
 
     /*********************************************************/
@@ -319,11 +349,20 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             //нажата кнопка "Light"
             case R.id.Light:
                 CheckValueIsChecked(R.id.Light
-                        ,idLight
+                        ,idsLight.get(0)
                         ,"set_on"
                         ,"set_off"
                         ,"Light has turned on"
                         ,"Light has turned off");
+                break;
+
+            case R.id.Light1:
+                CheckValueIsChecked(R.id.Light1,
+                        idsLight.get(1),
+                        "set_on",
+                        "set_off",
+                        "Light_has turned on",
+                        "Light has turned off");
                 break;
 
             case R.id.Curtain:
@@ -542,7 +581,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                         ,stateSwitchesMap.get(s)
                         ,"on"
                         ,"Light"
-                        ,R.id.Light);
+                        ,ids.get(i++));
 
             if(s.contains("F"))
                 GenerateTypeButton(linearLayout
@@ -561,6 +600,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
                         R.id.Player);
 
         }
+        i = 0;
     }
 
     /*********************************************************/
@@ -642,7 +682,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             //нажата кнопка "Quit"
             case R.id.update:
 
-                stateSwitches = getStateSwitches(stateSwitches);
+                stateSwitches = getStateSwitches(objectIds);
 
                 RemoveAllView(linearLayout);
 
@@ -672,37 +712,42 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
     /*********************************************************/
 
-    private void CheckToException(String _id)
+    private void CheckToException(List<List<String>> ObjectLists)
     {
-        if (_id != null) {
+        if (objectList != null) {
 
-            Call<Object> objectById = restInterface.getObjectById(_id);
+            for(List<String> l : ObjectLists){
 
-            try {
+               for(String id : l) {
 
-                Response<Object> response = objectById.execute();
+                   Call<Object> objectById = restInterface.getObjectById(id);
 
-                stateSwitches.put(_id
-                        ,response
-                                .body()
-                                .getStatus());
+                   try {
 
-            } catch (IOException e) {
-                startActivity(errorActivity);
+                       Response<Object> response = objectById.execute();
+
+                       stateSwitches.put(id
+                                        ,response
+                                         .body()
+                                         .getStatus());
+
+                   } catch (IOException e) {
+                       startActivity(errorActivity);
+
+                   }
+               }
+               }
+
 
             }
-        }
+
+
     }
 
 
-    public Map<String, String> getStateSwitches(Map<String, String> stateSwitches ) {
+    public Map<String, String> getStateSwitches(List<List<String>> ObjectLists ) {
 
-        CheckToException(idDoor);
-        CheckToException(idLight);
-        CheckToException(idCurtain);
-        CheckToException(idVentilations);
-        CheckToException(idDoor);
-        CheckToException(idPlayer);
+        CheckToException(ObjectLists);
         return stateSwitches;
     }
 

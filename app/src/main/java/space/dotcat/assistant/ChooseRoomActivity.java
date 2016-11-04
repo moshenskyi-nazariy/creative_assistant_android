@@ -1,5 +1,6 @@
 package space.dotcat.assistant;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -191,7 +192,7 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
 
         // записываю тело ответа в JAVA объект
         RoomsResponse roomContainer = roomResponse.body();
-        
+
         //получаю список всех комнат
         GenerateButton(roomContainer);
 
@@ -273,7 +274,6 @@ public class ChooseRoomActivity extends AppCompatActivity implements View.OnClic
                     //делаем запрос и записываем ответ от сервера в переменную
                     roomResponse = callObjectWithRoomList.execute();
                 } catch (IOException e) {
-
                     startActivity(errorIntent);
 
                     return;
