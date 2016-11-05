@@ -339,7 +339,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             //нажата кнопка "Door"
             case R.id.Door:
                 CheckValueIsChecked(R.id.Door
-                        ,idDoor
+                        ,idsDoor.get(0)
                         ,"open"
                         ,"close"
                         ,"Door has opened"
@@ -367,7 +367,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.Curtain:
                 CheckValueIsChecked(R.id.Curtain
-                        ,idCurtain
+                        ,idsCurtain.get(0)
                         ,"open"
                         ,"close"
                         ,"Curtain has opened"
@@ -376,7 +376,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.Ventilation:
                 CheckValueIsChecked(R.id.Ventilation
-                        ,idVentilations
+                        ,idsVentilation.get(0)
                         ,"set_on"
                         ,"set_off"
                         ,"Ventilation has opened"
@@ -385,7 +385,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.Player:
                 CheckValueIsChecked(R.id.Player
-                        ,idPlayer
+                        ,idsPlayer.get(0)
                         ,"play"
                         ,"stop"
                         ,"Player has started"
@@ -594,7 +594,7 @@ public class roomsActivity extends AppCompatActivity implements View.OnClickList
             if(s.contains("PLAY"))
                 GenerateTypeButton(linearLayout,
                         layoutParams,
-                        stateSwitches.get(s),
+                        stateSwitchesMap.get(s),
                         "playing",
                         "Player",
                         R.id.Player);
