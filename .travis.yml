@@ -23,23 +23,24 @@ android:
   - android-sdk-license-.+
   - google-gdk-license-.+
 before_cache:
-- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 before_script:
-- echo no | android create avd --force -n test -t ${ANDROID_TARGET} --abi ${ANDROID_ABI}
-- emulator -avd test -no-audio -no-window &
-- android-wait-for-emulator
-- adb shell input keyevent 82 &
+  - echo no | android create avd --force -n test -t ${ANDROID_TARGET} --abi ${ANDROID_ABI}
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 script:
-- "./gradlew build connectedCheck"
+  - "./gradlew build connectedCheck"
 before_deploy:
-- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 app/build/outputs/apk/app-release-unsigned.apk
+  - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 app/build/outputs/apk/app-release-unsigned.apk
   creative_client_test -keystore $TRAVIS_BUILD_DIR/.keystore -storepass $storepass
   -keypass $keypass
-- "${ANDROID_HOME}/build-tools/24.0.2/zipalign 4 app/build/outputs/apk/app-release-unsigned.apk
+  - "${ANDROID_HOME}/build-tools/24.0.2/zipalign 4 app/build/outputs/apk/app-release-unsigned.apk
   ${APK_PATH}"
 deploy:
   provider: releases
