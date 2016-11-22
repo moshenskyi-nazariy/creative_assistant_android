@@ -16,6 +16,9 @@ android {
 
         buildConfigField "String", "Base_URL", ' "http://api.ks-cube.tk/" '
     }
+    lintOptions {
+        abortOnError false
+    }
     buildTypes {
         release {
             minifyEnabled false
