@@ -2,9 +2,9 @@ language: android
 jdk: oraclejdk8
 env:
   global:
-  - ANDROID_TARGET=android-22
+  - ANDROID_TARGET=android-24
   - ANDROID_ABI=armeabi-v7a
-  - BUILD_TOOLS-VERSION=24.0.2
+  - BUILD_TOOLS-VERSION=25.0.1
   - BUILD_TOOLS=build-tools-${BUILD-TOOLS-VERSION}
   - APK_PATH=$HOME/creative_assistant_t${TRAVIS_BUILD_NUMBER}.apk
   - secure: Y3EkqWo5INuDN4pJC8EgkCnLiluNlvGh3UT/K80ySt+pCkMVbupnckPgG8c3VkpXNFxe03B+X2x1tL0/Trq9PhfU9PWzQn5sDC9bXHlaRWyKkXQUsZh85H8KbgWHHYRDNOdVs3mknLaNaO+XhAuwZHXkjG/ELk4wG3R0QmtTjGjjpYAJSRY+vH4m4UEQBfYd+Hz/8ty/6kRANXyQdQO/HpD7jcoThsq4Jl98QsuKu7jPLFq2XLi67/aLf+nu9/M/zMZVNK/qKm7a5La+NabmTCYjAW1ocd8g9bQQLDsQJMieSIkVJgLtGXYxNbBRu0C3UoZFwHlgYGYH8bREnzoXsV5BDR0B7vBIaAf4DXw/uwB6kF0FogEBvrr/B+aw5kemNwaLW61wP0vdbhDrwO+Giw1zG03lRg/t2K23d5ULeVFVl2rgZh8iucxN7Q9PjK5CpwiRJDOD86bkeNGxytKJs2C63jNnpCn22kzfb1KHDjSaVoU7Q1OweGiJwPMjMDDLYu3ZbwEpEZlTlBsYJRe9i6+Gl21BdrT9RhKcd7mJkjJleQUXzt6gB00ceKKyEHX0yit9xgxl+TrgC0F/j0HWsnTnjqLzCJgfxYZHB0LrHLTJffF0zhyDmnu6/A74NzzKxTPy4kXnGpjr3nUEAYJy9XnTjZ4QKNLgZYKqTMbXE5Y=
@@ -13,9 +13,8 @@ android:
   components:
   - tools
   - platform-tools
-  - build-tools-24.0.2
+  - build-tools-25.0.1
   - android-24
-  - android-22
   - extra-android-m2repository
   - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
   licenses:
@@ -23,24 +22,25 @@ android:
   - android-sdk-license-.+
   - google-gdk-license-.+
 before_cache:
-- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 before_script:
-- echo no | android create avd --force -n test -t ${ANDROID_TARGET} --abi ${ANDROID_ABI}
-- emulator -avd test -no-audio -no-window &
-- android-wait-for-emulator
-- adb shell input keyevent 82 &
+  - echo no | android create avd --force -n test -t ${ANDROID_TARGET} --abi ${ANDROID_ABI}
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 script:
-- "./gradlew build connectedCheck"
+  - "./gradlew build connectedCheck"
 before_deploy:
-- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 app/build/outputs/apk/app-release-unsigned.apk
-  creative_client_test -keystore $TRAVIS_BUILD_DIR/.keystore -storepass $storepass
-  -keypass $keypass
-- "${ANDROID_HOME}/build-tools/24.0.2/zipalign 4 app/build/outputs/apk/app-release-unsigned.apk
-  ${APK_PATH}"
+  - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 app/build/outputs/apk/app-release-unsigned.apk
+    creative_client_test -keystore $TRAVIS_BUILD_DIR/.keystore -storepass $storepass
+    -keypass $keypass
+  - "${ANDROID_HOME}/build-tools/25.0.1/zipalign 4 app/build/outputs/apk/app-release-unsigned.apk
+    ${APK_PATH}"
 deploy:
   provider: releases
   api_key:
@@ -51,5 +51,5 @@ deploy:
     repo: dot-cat/creative_assistant_android
     branch: travis_ci
 before_install:
-- openssl aes-256-cbc -K $encrypted_c57facf09bea_key -iv $encrypted_c57facf09bea_iv
-  -in .keystore.enc -out .keystore -d
+  - openssl aes-256-cbc -K $encrypted_c57facf09bea_key -iv $encrypted_c57facf09bea_iv
+    -in .keystore.enc -out .keystore -d
