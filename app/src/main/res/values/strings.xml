@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Creative Assistant</string>
+    <string name="app_name">RecyclerViewTest</string>
+    <string name="loading">Loading</string>
 </resources>
