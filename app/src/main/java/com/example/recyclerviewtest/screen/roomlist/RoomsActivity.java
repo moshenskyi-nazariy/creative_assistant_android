@@ -2,12 +2,22 @@ package com.example.recyclerviewtest.screen.roomlist;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.ListView;
 
 import com.example.recyclerviewtest.R;
 import com.example.recyclerviewtest.content.Room;
+import com.example.recyclerviewtest.screen.BaseActivity;
 import com.example.recyclerviewtest.screen.general.LoadingDialog;
 import com.example.recyclerviewtest.screen.general.LoadingView;
 
@@ -19,7 +29,7 @@ import butterknife.ButterKnife;
 import ru.arturvasilov.rxloader.LifecycleHandler;
 import ru.arturvasilov.rxloader.LoaderLifecycleHandler;
 
-public class RoomsActivity extends AppCompatActivity implements RoomsView, RoomsAdapter.OnItemClick {
+public class RoomsActivity extends BaseActivity implements RoomsView, RoomsAdapter.OnItemClick {
 
     @BindView(R.id.recyclerView)
     RecyclerView mRecyclerVIew;
@@ -33,7 +43,11 @@ public class RoomsActivity extends AppCompatActivity implements RoomsView, Rooms
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rooms);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View room = inflater.inflate(R.layout.activity_rooms, frameLayout, true);
+        mDrawerLayout.addView(room);
+
         ButterKnife.bind(this);
 
         mLoadingView = LoadingDialog.view(getSupportFragmentManager());
@@ -71,4 +85,5 @@ public class RoomsActivity extends AppCompatActivity implements RoomsView, Rooms
 
     @Override
     public void hideLoading() { mLoadingView.hideLoading();}
+
 }

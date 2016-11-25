@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">RecyclerViewTest</string>
+    <string name="dev_name">Creative assembly of technologies</string>
+    <string name="dev_site">http://dotcat.space</string>
     <string name="loading">Loading</string>
+
+    <string name="drawer_open">Open drawer</string>
+    <string name="drawer_close">Close drawer</string>
 </resources>
